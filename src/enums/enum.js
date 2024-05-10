@@ -49,8 +49,10 @@ export const UserType = {
   User: 2,
 };
 
-
-export const IsEnable = {
-  Идэвхтэй: 1,
-  Идэвхгүй: 0,
-};
+export const IsEnable = [
+  { value: 1, label: "Идэвхтэй" },
+  {
+    value: 0,
+    label: "Идэвхгүй",
+  },
+];

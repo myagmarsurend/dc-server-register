@@ -30,6 +30,7 @@ export default function appReducer(state, action) {
         filter: undefined,
         errorMsg: "",
         isOpenError: false,
+        modalVisible: false,
         islogin: action.response,
         _auth: action.response
           ? JSON.parse(localStorage.getItem("auth"))
@@ -74,6 +75,12 @@ export default function appReducer(state, action) {
       return {
         ...state,
         ressearchvpc: action.response,
+      };
+    }
+    case "setModal": {
+      return {
+        ...state,
+        modal: action.response,
       };
     }
 

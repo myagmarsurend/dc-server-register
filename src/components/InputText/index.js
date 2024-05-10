@@ -1,14 +1,17 @@
-import { InputText } from "primereact/inputtext";
 import React from "react";
+import { InputText } from "primereact/inputtext";
+import { FloatLabel } from "primereact/floatlabel";
 
-const Index = ({ id, type, placeholder, className }) => {
+const Index = ({ value, setValue, label, id }) => {
   return (
-    <InputText
-      id={id}
-      type={type}
-      placeholder={placeholder}
-      className={className}
-    />
+    <div className="card flex justify-content-center">
+      <FloatLabel>
+        <InputText
+          id={id}
+        />
+        <label htmlFor={id}>{label}</label>
+      </FloatLabel>
+    </div>
   );
 };
 

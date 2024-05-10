@@ -10,3 +10,11 @@ body,
   font-size: 1.1em;
   font-weight: bold;
 }
+
+.p-dropdown .p-dropdown-label {
+  font-size: 0.875rem !important;
+}
+
+.p-dropdown-items-wrapper {
+  font-size: 0.875rem !important;
+}

@@ -108,7 +108,7 @@ const Index = (props) => {
             className="w-full md:w-15rem border-none border-right-1 border-top-1"
           />
         </div>
-        <div className="col-10 h-full flex justify-content-start">
+        <div className="col-10 pr-3 h-full flex justify-content-start">
           <Routes location={location} key={location.pathname}>
             {/* <Route path={"server"} element={<Containers.Server />} />
             <Route path={"virtual"} element={<Containers.Virtual />} />
@@ -122,6 +122,7 @@ const Index = (props) => {
           </Routes>
         </div>
       </div>
+      <Containers.AddEdit />
     </div>
   );
 };

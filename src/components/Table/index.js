@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as xlsx from "xlsx";
 import module from "file-saver";
 import { DataTable } from "primereact/datatable";
@@ -8,11 +15,13 @@ import { Tooltip } from "primereact/tooltip";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { useLocation, useNavigate } from "react-router-dom";
-import { InputText } from "..";
+import { InputText } from "primereact/inputtext";
+import { GlobalContext } from "../../context";
 
 const Index = ({ columns, data }) => {
   const datas = data || [];
   const navigate = useNavigate();
+  const context = useContext(GlobalContext);
   const dt = useRef(null);
   const location = useLocation();
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -37,7 +46,6 @@ const Index = ({ columns, data }) => {
 
   const onGlobalFilterChange = useCallback((e) => {
     const value = e.target.value;
-    console.log("🚀 ~ onGlobalFilterChange ~ value:", value);
 
     setGlobalFilterValue(value);
   }, []);
@@ -76,16 +84,17 @@ const Index = ({ columns, data }) => {
   };
 
   const add = () => {
-    navigate(location.pathname + "/add");
+    context?.setModal({ visible: true, data: null });
   };
 
   const header = () => {
     return (
       <div className="flex align-items-center justify-content-between gap-2">
         <div className="flex justify-content-end">
-          <IconField iconPosition="left">
+          <IconField iconPosition="left" className="text-sm">
             <InputIcon className="pi pi-search" />
             <InputText
+              className="text-sm"
               value={globalFilterValue}
               onChange={onGlobalFilterChange}
               placeholder="Хайх"
@@ -116,7 +125,7 @@ const Index = ({ columns, data }) => {
   };
 
   const onRowClick = (e) => {
-    navigate(location.pathname + "/edit", { state: { data: e.data } });
+    context?.setModal({ visible: true, data: e.data });
   };
 
   return (

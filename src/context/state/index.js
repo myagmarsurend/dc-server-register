@@ -16,6 +16,7 @@ const initialState = {
   errorMsg: "",
   isOpenError: false,
   monitoring: {},
+  modal: { visible: false, data: null },
   // guideContent: [],
 };
 
@@ -90,6 +91,7 @@ export const GlobalProvider = (props) => {
     dispatch({ type: "setMonitoring", response: data });
   // const setGuide = (data) => dispatch({ type: "setGuide", response: data });
   const setVpc = (data) => dispatch({ type: "setVPC", response: data });
+  const setModal = (data) => dispatch({ type: "setModal", response: data });
   /*  const notification = ({ type, message, description }) => {
     Ant.notification[type]({
       message: message,
@@ -108,6 +110,7 @@ export const GlobalProvider = (props) => {
           // setGuide,
           setVpc,
           setMonitoring,
+          setModal,
         }}
       >
         {props.children}

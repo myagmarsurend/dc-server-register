@@ -1,9 +1,7 @@
 import React from "react";
 
 const Index = (props) => {
-  const handleSubmit = () => {};
-
-  return <div>index</div>;
+  return <div>MOnitor</div>;
 };
 
 export default Index;

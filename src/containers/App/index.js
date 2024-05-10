@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { GlobalContext } from "../../context";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Menu } from "primereact/menu";
 import * as Containers from "../";
 
 const PrivateRoute = ({ Page, ...props }) => {
@@ -15,7 +14,7 @@ const PrivateRoute = ({ Page, ...props }) => {
 const Index = (props) => {
   const context = useContext(GlobalContext);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     await context?.request({
       url: `user/getAllUser`,
       model: "userlist",
@@ -36,13 +35,15 @@ const Index = (props) => {
       model: "systemlist",
       method: "POST",
     });
-  };
+  }, [context]);
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (context?._auth) {
+      fetchData();
+    }
+  }, [context?._auth]);
 
   return (
-    <div className="flex w-full h-full justify-content-center align-items-center">
+    <div className="flex w-full h-full justify-content-center align-items-center bg-yellow-50">
       <Routes>
         <Route
           path="/*"

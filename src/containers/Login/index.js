@@ -51,7 +51,7 @@ const Index = () => {
         localStorage.removeItem("code");
       }
 
-      navigate("/app");
+      navigate("/server");
     } else {
       toast.error(res?.message);
     }

@@ -1,134 +1,125 @@
-import React, { useContext, useEffect } from "react";
-import { GlobalContext } from "../../context";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
 import { Menu } from "primereact/menu";
-import * as Containers from "../";
 import { Menubar } from "primereact/menubar";
-
-const PrivateRoute = ({ Page, ...props }) => {
-  if (!props.islogin && !props._auth) {
-    return <Navigate to={"/login"} />;
-  } else {
-    return <Page {...props} />;
-  }
-};
+import { ROUTES } from "../../enums/routes";
+import * as Containers from "../";
 
 const Index = (props) => {
-  const context = useContext(GlobalContext);
+  const userData = JSON.parse(localStorage.getItem("auth"));
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const fetchData = async () => {
-    await context?.request({
-      url: `user/getAllUser`,
-      model: "userlist",
-      method: "POST",
-    });
-    await context?.request({
-      url: `virtual/getAllVirtual`,
-      model: "vpclist",
-      method: "POST",
-    });
-    await context?.request({
-      url: `server/getAllServer`,
-      model: "serverlist",
-      method: "POST",
-    });
-    await context?.request({
-      url: `system/getAllSystem`,
-      model: "systemlist",
-      method: "POST",
-    });
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const itemsMenuStart = (
+    <span className="inline-flex align-items-center gap-1 px-2 py-2">
+      <span className="text-xl font-bold text-white">
+        СЕРВЕР<span className="text-orange-300"> БҮРТГЭЛ</span>
+      </span>
+    </span>
+  );
 
-  const itemsMenuBar = [
-    {
-      label: "File",
-      icon: "pi pi-file",
-      items: [
-        {
-          label: "New",
-          icon: "pi pi-plus",
-        },
-        {
-          label: "Print",
-          icon: "pi pi-print",
-        },
-      ],
-    },
-    {
-      label: "Search",
-      icon: "pi pi-search",
-    },
-    {
-      separator: true,
-    },
-    {
-      label: "Sync",
-      icon: "pi pi-cloud",
-      items: [
-        {
-          label: "Import",
-          icon: "pi pi-cloud-download",
-        },
-        {
-          label: "Export",
-          icon: "pi pi-cloud-upload",
-        },
-      ],
-    },
-  ];
-
-  const itemRenderer = (item) => (
-    <div className="p-menuitem-content">
-      <a className="flex align-items-center p-menuitem-link" href={item?.href}>
-        <span className="mx-2">{item?.label}</span>
-      </a>
+  const itemsMenuEnd = (
+    <div>
+      <label className="p-mr-2 text-white font-bold">
+        Ажилтны код: {userData?.code}
+      </label>
     </div>
   );
 
+  const itemRenderer = (item) => {
+    const isActive = location.pathname === item.href;
+    const onClick = () => {
+      navigate(item?.href);
+    };
+
+    return (
+      <div
+        className={`p-menuitem-content border-bottom-1 border-200 ${
+          isActive ? "p-menuitem-active" : ""
+        }`}
+        onClick={onClick}
+      >
+        <span className="flex align-items-center p-menuitem-link">
+          <span className="mx-2">{item?.label}</span>
+        </span>
+      </div>
+    );
+  };
+
   let items = [
     {
-      template: () => {
-        return (
-          <span className="inline-flex align-items-center gap-1 px-2 py-2">
-            <span className="text-xl font-bold">
-              СЕРВЕР<span className="text-primary"> БҮРТГЭЛ</span>
-            </span>
-          </span>
-        );
-      },
-    },
-    {
-      separator: true,
-    },
-    {
-      label: "Documents",
+      label: "Хэрэглэгчийн жагсаалт",
       template: itemRenderer,
+      href: "/user",
     },
     {
-      label: "Profile",
+      label: "Сервер",
       template: itemRenderer,
+      href: "/server",
     },
     {
-      separator: true,
+      label: "Виртуал",
+      template: itemRenderer,
+      href: "/virtual",
+    },
+    {
+      label: "Систем",
+      template: itemRenderer,
+      href: "/system",
+    },
+    {
+      label: "Мониторинг",
+      template: itemRenderer,
+      href: "/monitoring",
     },
   ];
+
+  const renderRoutes = () =>
+    ROUTES.flatMap((route) => [
+      <Route
+        key={route.path}
+        path={route.path}
+        element={React.createElement(Containers[route.comp])}
+      />,
+      ...(route.subroutes || []).map((sub) => (
+        <Route
+          key={sub.path}
+          path={sub.path}
+          element={React.createElement(Containers[sub.comp])}
+        />
+      )),
+    ]);
 
   return (
     <div className="w-full h-full">
       <div className="grid">
         <div className="col-12">
-          <Menubar model={itemsMenuBar} />
+          <Menubar
+            start={itemsMenuStart}
+            end={itemsMenuEnd}
+            className="border-none border-bottom-1 bg-bluegray-700"
+          />
         </div>
       </div>
-      <div className="grid h-full ">
-        <div className="col-2 card flex justify-content-start">
-          <Menu model={items} className="w-full md:w-15rem" />
+      <div className="grid h-full">
+        <div className="col-2 flex justify-content-start">
+          <Menu
+            model={items}
+            className="w-full md:w-15rem border-none border-right-1 border-top-1"
+          />
         </div>
-        <div className="col-10 card flex justify-content-center">
-          <Menu model={items} className="w-full md:w-15rem" />
+        <div className="col-10 h-full flex justify-content-start">
+          <Routes location={location} key={location.pathname}>
+            {/* <Route path={"server"} element={<Containers.Server />} />
+            <Route path={"virtual"} element={<Containers.Virtual />} />
+            <Route path={"user"} element={<Containers.User />} />
+            <Route path={"system"} element={<Containers.System />} />
+            <Route path={"monitoring"} element={<Containers.Monitoring />} />
+            <Route path={"add"} element={<Containers.AddEdit />} />
+            <Route path={"edit"} element={<Containers.AddEdit />} /> */}
+            {renderRoutes()}
+            {/* {renderSubRoutes()} */}
+          </Routes>
         </div>
       </div>
     </div>

@@ -3,4 +3,10 @@ body,
 #root {
   overflow: hidden;
   height: 100%;
+  font-size: 0.95em;
+}
+
+.p-datatable .p-column-header-content .p-column-title {
+  font-size: 1.1em;
+  font-weight: bold;
 }

@@ -1,6 +1,8 @@
 import { Tag } from "primereact/tag";
-import { memo } from "react";
+import { memo, useState } from "react";
 import moment from "moment";
+import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
 
 const Formatter = ({ format, value, type, bg }) => {
   switch (format) {
@@ -39,6 +41,8 @@ const Formatter = ({ format, value, type, bg }) => {
       return value && moment(value).format("YYYY-MM-DD");
     case "systemtype":
       return getSystemType(value);
+    case "seemanual":
+      return ViewManual(value);
     default:
       return <Tag value={value} severity={type} />;
   }
@@ -229,6 +233,34 @@ const getSystemType = (value) => {
     default:
       return null;
   }
+};
+
+const ViewManual = (value) => {
+  console.log("🚀 ~ ViewManual ~ value:", value);
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <Button
+        className="text-sm"
+        onClick={() => {
+          setVisible(true);
+        }}
+      >
+        Харах
+      </Button>
+      <Dialog
+        closable
+        onHide={() => {
+          setVisible(false);
+        }}
+        header="Гарын авлага"
+        visible={visible}
+      >
+        <div dangerouslySetInnerHTML={{ __html: value }} />
+      </Dialog>
+    </>
+  );
 };
 
 export default memo(Formatter);

@@ -19,7 +19,7 @@ const Index = (props) => {
         return <ServerAddEdit data={location?.state?.data} />;
       case "/virtual":
         return <VirtualAddEdit data={location?.state?.data} />;
-      case "/sytem":
+      case "/system":
         return <SystemAddEdit data={location?.state?.data} />;
       default:
         return null;

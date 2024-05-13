@@ -295,7 +295,7 @@ export const SystemListColumns = [
     key: "virtual",
     align: "center",
     body: (value, row) => {
-      return `${row?.virtual?.ipaddress[0]}:${row?.port}`;
+      return <span>{value?.ipaddress[0]}</span>;
     },
   },
   {
@@ -310,7 +310,7 @@ export const SystemListColumns = [
     key: "virtual",
     align: "center",
     body: (value, row) => {
-      return `${row?.testvirtual?.ipaddress[0]}:${row?.testport}`;
+      return <span>{value?.ipaddress[0]}</span>;
     },
   },
   {
@@ -324,8 +324,11 @@ export const SystemListColumns = [
     key: "manual",
     width: 160,
     align: "center",
-    body: (value, row, index) => (
-      <Formatter value={value} format="seemanual" row={row} index={index} />
-    ),
+    body: (value, row, index) => {
+      console.log("🚀 ~ value:", value);
+      return (
+        <Formatter value={value} format="seemanual" row={row} index={index} />
+      );
+    },
   },
 ];

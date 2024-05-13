@@ -1,23 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import React, { useContext } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
-import { CpuUnit, RamUnit, VpcType } from "../../enums/enum";
+import { SystemType } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
+import { MultiSelect } from "primereact/multiselect";
+import { Editor } from "primereact/editor";
 
 const SystemAddEdit = () => {
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
   const header = data ? "Систем засах" : "Шинэ систем нэмэх";
-  const [hardList, setHardList] = useState([]);
 
-  const serverList = (context?.resserverlist || [])?.map?.((item, index) => {
+  const serverList = (context?.resvpclist || [])?.map?.((item, index) => {
     return {
       value: item?._id,
       label: item?.ipaddress[0] + "-" + item?.name,
+    };
+  });
+
+  const userList = (context?.resuserlist || [])?.map?.((item, index) => {
+    return {
+      value: item?._id,
+      label: item?.lname,
     };
   });
 
@@ -27,64 +35,27 @@ const SystemAddEdit = () => {
     formState: { errors },
     reset,
     control,
-    watch,
   } = useForm({
     defaultValues: {
       name: data?.name || "",
-      username: data?.username || "",
-      password: data?.password || "",
-      passwordAgain: data?.passwordAgain || "",
-      server: data?.server?._id || serverList[0]?.value,
-      dns: data?.dns || "",
-      ipaddress: data?.ipaddress || [{ _id: null }],
-      ram: data?.ram || 0,
-      ramunit: data?.ramunit || RamUnit[0]?.value,
-      cpu: data?.cpu || 0,
-      cpuunit: data?.cpuunit || CpuUnit[0]?.value,
-      hard: data?.hard || [{ hardname: "", hardcap: 0, _id: null }],
+      type: data?.type || SystemType[0]?.value,
+      virtual: data?.virtual?._id || serverList[0]?.value,
+      testvirtual: data?.testvirtual?._id || serverList[0]?.value,
+      port: data?.port || undefined,
+      testport: data?.testport || undefined,
+      domain: data?.domain || undefined,
+      testdomain: data?.testdomain || undefined,
+      permission: data?.permission || undefined,
+      manual: data?.manual || undefined,
       _id: data?._id || null,
-      os: data?.os || VpcType[0]?.value,
     },
-  });
-
-  const serverId = watch("server");
-  useEffect(() => {
-    const selectedServer = context?.resserverlist?.find(
-      (item) => item._id === serverId
-    );
-    const mappedHardList =
-      selectedServer?.hard?.map((hardItem) => ({
-        value: hardItem._id,
-        label: `${hardItem.hardname} - ${hardItem.hardcap}/${
-          hardItem.hardcap - hardItem.hardusedcap
-        } GB`,
-      })) || [];
-    setHardList(mappedHardList);
-  }, [serverId, context?.resserverlist]);
-
-  const {
-    fields: fieldsHard,
-    append: appendHard,
-    remove: removeHard,
-  } = useFieldArray({
-    control,
-    name: "hard",
-  });
-
-  const {
-    fields: fieldsIp,
-    append: appendIp,
-    remove: removeIp,
-  } = useFieldArray({
-    control,
-    name: "ipaddress",
   });
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
     const res = await context?.request({
       method: "POST",
-      url: "virtual/addVirtual",
+      url: "system/addSystem",
       body: data,
     });
 
@@ -94,27 +65,13 @@ const SystemAddEdit = () => {
       context?.setModal({ visible: false, data: null });
 
       await context?.request({
-        url: `virtual/getAllVirtual`,
-        model: "vpclist",
+        url: `system/getAllSystem`,
+        model: "systemlist",
         method: "POST",
       });
     } else {
       toast.error(res?.message);
     }
-  };
-
-  const handleAddHard = () => {
-    appendHard({ hardname: "", hardcap: 0 });
-  };
-  const handleRemoveHard = () => {
-    removeHard(fieldsHard.length - 1);
-  };
-
-  const handleAddIp = () => {
-    appendIp({});
-  };
-  const handleRemoveIp = () => {
-    removeIp(fieldsIp.length - 1);
   };
 
   return (
@@ -139,391 +96,227 @@ const SystemAddEdit = () => {
         </div>
 
         <div className="field">
-          <label htmlFor="username" className="block text-sm font-medium mb-2">
-            Username
+          <label htmlFor="type" className="block text-sm font-medium mb-2">
+            Системийн төрөл
           </label>
-          <InputText
-            {...register("username", { required: "username оруулна уу." })}
-            id="username"
-            type="text"
-            placeholder="Нэр"
-            className={`w-full text-sm mb-1 ${
-              errors.username ? "p-invalid" : ""
-            }`}
+          <Controller
+            name="type"
+            control={control}
+            rules={{ required: "Төрөл сонгоно уу." }}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                value={field?.value}
+                id="type"
+                options={SystemType}
+                placeholder="Төрөл сонгох"
+                className={`w-full text-sm ${errors.type ? "p-invalid" : ""}`}
+              />
+            )}
           />
-          {errors.username && (
-            <small className="p-error">{errors.username.message}</small>
+          {errors.type && (
+            <small className="p-error">{errors.type.message}</small>
           )}
         </div>
 
-        {!data && (
-          <>
-            <div className="field">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг
-              </label>
-              <InputText
-                {...register("password", { required: "Нууц үгээ оруулна уу." })}
-                id="password"
-                type="password"
-                placeholder="Нууц үг"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
-              />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
-              )}
-            </div>
-            <div className="field">
-              <label
-                htmlFor="passwordAgain"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг давтах
-              </label>
-              <InputText
-                {...register("passwordAgain", {
-                  required: "Нууц үгээ давтаж оруулна уу.",
-                })}
-                id="passwordAgain"
-                type="password"
-                placeholder="Нууц үг давтах"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
-              />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
-              )}
-            </div>
-          </>
-        )}
-
         <div className="field">
-          <label htmlFor="server" className="block text-sm font-medium mb-2">
-            Сервер
+          <label htmlFor="virtual" className="block text-sm font-medium mb-2">
+            Real орчны Сервер
           </label>
           <Controller
-            name="server"
+            name="virtual"
             control={control}
             rules={{ required: "Server сонгоно уу." }}
             render={({ field }) => (
               <Dropdown
                 {...field}
                 value={field?.value}
-                id="server"
+                id="virtual"
                 options={serverList}
                 placeholder="Сервер сонгох"
-                className={`w-full text-sm ${errors.server ? "p-invalid" : ""}`}
+                className={`w-full text-sm ${
+                  errors.virtual ? "p-invalid" : ""
+                }`}
               />
             )}
           />
-          {errors.server && (
-            <small className="p-error">{errors.server.message}</small>
+          {errors.virtual && (
+            <small className="p-error">{errors.virtual.message}</small>
           )}
         </div>
 
         <div className="field">
-          <label htmlFor="dns" className="block text-sm font-medium mb-2">
-            Домайн нэр
-          </label>
-          <InputText
-            {...register("dns", { required: "Домайн нэр оруулна уу." })}
-            id="dns"
-            type="text"
-            placeholder="Нэр"
-            className={`w-full text-sm mb-1 ${errors.dns ? "p-invalid" : ""}`}
-          />
-          {errors.dns && (
-            <small className="p-error">{errors.dns.message}</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="ram" className="block text-sm font-medium mb-2">
-            Рам
+          <label htmlFor="port" className="block text-sm font-medium mb-2">
+            Real орчны port
           </label>
           <Controller
-            name="ram"
+            name="port"
             control={control}
-            rules={{ required: "Рам оруулна уу." }}
+            rules={{ required: "Real орчны port оруулна уу." }}
             render={({ field, fieldState }) => (
               <InputNumber
                 {...field}
-                id="ram"
+                id="port"
                 mode="decimal"
                 value={field.value}
                 min={0}
                 onChange={(e) => field.onChange(e.value)}
-                placeholder="Рам"
+                placeholder="port"
                 className={`w-full text-sm ${
                   fieldState.error ? "p-invalid" : ""
                 }`}
               />
             )}
           />
-          {errors.ram && (
-            <small className="p-error">{errors.ram.message}</small>
+          {errors.port && (
+            <small className="p-error">{errors.port.message}</small>
           )}
         </div>
 
         <div className="field">
-          <label htmlFor="ramunit" className="block text-sm font-medium mb-2">
-            Рам нэгж
+          <label htmlFor="domain" className="block text-sm font-medium mb-2">
+            Real орчны Домайн нэр
+          </label>
+          <InputText
+            {...register("domain", { required: "Домайн нэр оруулна уу." })}
+            id="domain"
+            type="text"
+            placeholder="Нэр"
+            className={`w-full text-sm mb-1 ${
+              errors.domain ? "p-invalid" : ""
+            }`}
+          />
+          {errors.domain && (
+            <small className="p-error">{errors.domain.message}</small>
+          )}
+        </div>
+
+        <div className="field">
+          <label
+            htmlFor="testvirtual"
+            className="block text-sm font-medium mb-2"
+          >
+            Test орчны Сервер
           </label>
           <Controller
-            name="ramunit"
+            name="testvirtual"
             control={control}
-            rules={{ required: "Рам нэгж сонгоно уу." }}
+            rules={{ required: "Server сонгоно уу." }}
             render={({ field }) => (
               <Dropdown
                 {...field}
                 value={field?.value}
-                id="ramunit"
-                options={RamUnit}
-                placeholder="Рам нэгж сонгох"
+                id="testvirtual"
+                options={serverList}
+                placeholder="Сервер сонгох"
                 className={`w-full text-sm ${
-                  errors.ramunit ? "p-invalid" : ""
+                  errors.testvirtual ? "p-invalid" : ""
                 }`}
               />
             )}
           />
-          {errors.ramunit && (
-            <small className="p-error">{errors.ramunit.message}</small>
+          {errors.testvirtual && (
+            <small className="p-error">{errors.testvirtual.message}</small>
           )}
         </div>
 
         <div className="field">
-          <label htmlFor="cpu" className="block text-sm font-medium mb-2">
-            CPU
+          <label htmlFor="testport" className="block text-sm font-medium mb-2">
+            Test орчны port
           </label>
           <Controller
-            name="cpu"
+            name="testport"
             control={control}
-            rules={{ required: "CPU оруулна уу." }}
+            rules={{ required: "Test орчны port оруулна уу." }}
             render={({ field, fieldState }) => (
               <InputNumber
                 {...field}
-                id="cpu"
+                id="testport"
+                mode="decimal"
                 value={field.value}
+                min={0}
                 onChange={(e) => field.onChange(e.value)}
-                placeholder="CPU"
+                placeholder="testport"
                 className={`w-full text-sm ${
                   fieldState.error ? "p-invalid" : ""
                 }`}
               />
             )}
           />
-          {errors.cpu && (
-            <small className="p-error">{errors.cpu.message}</small>
+          {errors.testport && (
+            <small className="p-error">{errors.testport.message}</small>
           )}
         </div>
 
         <div className="field">
-          <label htmlFor="cpuunit" className="block text-sm font-medium mb-2">
-            CPU нэгж
-          </label>
-          <Controller
-            name="cpuunit"
-            control={control}
-            rules={{ required: "CPU нэгж сонгоно уу." }}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                value={field?.value}
-                id="cpuunit"
-                options={CpuUnit}
-                placeholder="Рам нэгж сонгох"
-                className={`w-full text-sm ${
-                  errors.cpuunit ? "p-invalid" : ""
-                }`}
-              />
-            )}
-          />
-          {errors.cpuunit && (
-            <small className="p-error">{errors.cpuunit.message}</small>
-          )}
-        </div>
-
-        {fieldsHard.map((item, index) => (
-          <div className="flex flex-row gap-2 align-items-center" key={item.id}>
-            <div className="field">
-              <label
-                htmlFor={`hardname-${index}`}
-                className="block text-sm font-medium mb-2"
-              >
-                Hard нэр
-              </label>
-              {/* <InputText
-                {...register(`hard.${index}.hardname`, {
-                  required: "Hard нэр оруулна уу.",
-                })}
-                id={`hardname-${index}`}
-                type="text"
-                placeholder="Hard нэр"
-                className={`w-full text-sm mb-1 ${
-                  errors.hard?.[index]?.hardname ? "p-invalid" : ""
-                }`}
-              /> */}
-              <Controller
-                name={`hard.${index}.hardname`}
-                control={control}
-                rules={{ required: "Hard нэр оруулна уу." }}
-                render={({ field }) => (
-                  <Dropdown
-                    {...field}
-                    value={field?.value}
-                    id={`hardname-${index}`}
-                    options={hardList}
-                    placeholder="Hard сонгох"
-                    className={`w-full text-sm mb-1 ${
-                      errors.hard?.[index]?.hardname ? "p-invalid" : ""
-                    }`}
-                  />
-                )}
-              />
-              {errors.hard?.[index]?.hardname && (
-                <small className="p-error">
-                  {errors.hard[index].hardname.message}
-                </small>
-              )}
-            </div>
-            <div className="field">
-              <label
-                htmlFor={`hardcap-${index}`}
-                className="block text-sm font-medium mb-1"
-              >
-                Hard эзлэх хэмжээ (GB)
-              </label>
-              <Controller
-                name={`hard.${index}.hardcap`}
-                control={control}
-                rules={{ required: "Hard хэмжээ оруулна уу." }}
-                render={({ field, fieldState }) => (
-                  <InputNumber
-                    {...field}
-                    id={`hardcap-${index}`}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.value)}
-                    placeholder="Hard хэмжээ"
-                    className={`w-full text-sm ${
-                      fieldState.error ? "p-invalid" : ""
-                    }`}
-                  />
-                )}
-              />
-              {errors.hard?.[index]?.hardcap && (
-                <small className="p-error">
-                  {errors.hard[index].hardcap.message}
-                </small>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {fieldsIp.map((item, index) => (
-          <div
-            className="flex flex-row gap-2 align-items-center justify-content-between"
-            key={item.id}
+          <label
+            htmlFor="testdomain"
+            className="block text-sm font-medium mb-2"
           >
-            <div className="field">
-              <label
-                htmlFor={`ipaddress-${index}`}
-                className="block text-sm font-medium mb-2"
-              >
-                IP address
-              </label>
-              <InputText
-                {...register(`ipaddress.${index}`, {
-                  required: "IP оруулна уу.",
-                })}
-                id={`ipaddress-${index}`}
-                type="text"
-                placeholder="Ip address"
-                className={`w-full text-sm mb-1 ${
-                  errors.ipaddress?.[index] ? "p-invalid" : ""
-                }`}
-              />
-              {errors.ipaddress?.[index] && (
-                <small className="p-error">
-                  {errors.ipaddress[index].message}
-                </small>
-              )}
-            </div>
-
-            {fieldsIp.length === index + 1 && (
-              <div className="flex gap-2">
-                <div className="field">
-                  <label
-                    htmlFor="ipremove"
-                    className="block text-sm font-medium"
-                  >
-                    IP хасах
-                  </label>
-                  <Button
-                    icon="pi pi-minus"
-                    className="w-full text-sm bg-red-500 border-none"
-                    onClick={handleRemoveIp}
-                  />
-                </div>
-                <div className="field">
-                  <label htmlFor="ipadd" className="block text-sm font-medium">
-                    IP нэмэх
-                  </label>
-                  <Button
-                    icon="pi pi-plus"
-                    className="w-full text-sm bg-green-500 border-none"
-                    onClick={handleAddIp}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-
-        <div className="field">
-          <label htmlFor="hostname" className="block text-sm font-medium mb-2">
-            Hostname
+            Test орчны Домайн нэр
           </label>
           <InputText
-            {...register("hostname", { required: "Hostname оруулна уу." })}
-            id="hostname"
+            {...register("testdomain", { required: "Домайн нэр оруулна уу." })}
+            id="testdomain"
             type="text"
-            placeholder="Hostname"
+            placeholder="Нэр"
             className={`w-full text-sm mb-1 ${
-              errors.hostname ? "p-invalid" : ""
+              errors.testdomain ? "p-invalid" : ""
             }`}
           />
-          {errors.hostname && (
-            <small className="p-error">{errors.hostname.message}</small>
+          {errors.testdomain && (
+            <small className="p-error">{errors.testdomain.message}</small>
           )}
         </div>
 
         <div className="field">
-          <label htmlFor="os" className="block text-sm font-medium mb-2">
-            Төрөл
+          <label
+            htmlFor="permission"
+            className="block text-sm font-medium mb-2"
+          >
+            Хэрэглэгчид
           </label>
           <Controller
-            name="os"
+            name="permission"
             control={control}
-            rules={{ required: "OS сонгоно уу." }}
+            rules={{ required: "Хэрэглэгч сонгоно уу." }}
             render={({ field }) => (
-              <Dropdown
+              <MultiSelect
                 {...field}
                 value={field?.value}
-                id="os"
-                options={VpcType}
-                placeholder="OS сонгох"
-                className={`w-full text-sm ${errors.os ? "p-invalid" : ""}`}
+                id="permission"
+                options={userList}
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Хэрэглэгч сонгох"
+                className={`w-full text-sm ${
+                  errors.permission ? "p-invalid" : ""
+                }`}
               />
             )}
           />
-          {errors.os && <small className="p-error">{errors.os.message}</small>}
+          {errors.permission && (
+            <small className="p-error">{errors.permission.message}</small>
+          )}
         </div>
+
+        <div className="field">
+          <label htmlFor="manual" className="block text-sm font-medium mb-2">
+            Гарын авлага
+          </label>
+          <Controller
+            name="manual"
+            control={control}
+            render={({ field }) => (
+              <Editor
+                value={field?.value}
+                onTextChange={(e) => field.onChange(e.htmlValue)}
+                style={{ height: "320px" }}
+              />
+            )}
+          />
+        </div>
+
         <Button
           type="submit"
           label="Хадгалах"

@@ -65,22 +65,12 @@ const UserAddEdit = () => {
           <label htmlFor="code" className="block text-sm font-medium mb-2">
             Ажилчны код
           </label>
-          <Controller
-            name="code"
-            control={control}
-            rules={{ required: "Ажилтны кодоо оруулна уу." }}
-            render={({ field, fieldState }) => (
-              <InputNumber
-                {...field}
-                id="code"
-                value={field.value}
-                onChange={(e) => field.onChange(e.value)}
-                placeholder="Ажилчны код"
-                className={`w-full text-sm ${
-                  fieldState.error ? "p-invalid" : ""
-                }`}
-              />
-            )}
+          <InputText
+            {...register("code", { required: "Ажилтны кодоо оруулна уу." })}
+            id="code"
+            type="text"
+            placeholder="Ажилчны код"
+            className={`w-full text-sm mb-1 ${errors.code ? "p-invalid" : ""}`}
           />
           {errors.code && (
             <small className="p-error">{errors.code.message}</small>

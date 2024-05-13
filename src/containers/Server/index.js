@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Table } from "../../components";
 import { ServerListColumns } from "../../enums/columns";
 import { GlobalContext } from "../../context";
@@ -6,6 +6,11 @@ import { GlobalContext } from "../../context";
 const Index = (props) => {
   const context = useContext(GlobalContext);
   const data = context?.resserverlist || [];
+
+
+  useEffect(() => {
+    document.title = "Сервер";
+  }, []);
 
   return (
     <>

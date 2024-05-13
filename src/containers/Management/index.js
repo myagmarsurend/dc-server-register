@@ -1,14 +1,32 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
 import { Menu } from "primereact/menu";
 import { Menubar } from "primereact/menubar";
 import { ROUTES } from "../../enums/routes";
 import * as Containers from "../";
+import { GlobalContext } from "../../context";
+import { Dialog } from "primereact/dialog";
+import { UserType } from "../../enums/enum";
+import { Button } from "primereact/button";
 
-const Index = (props) => {
+const Index = () => {
   const userData = JSON.parse(localStorage.getItem("auth"));
   const navigate = useNavigate();
   const location = useLocation();
+  const context = useContext(GlobalContext);
+  const [visible, setVisible] = useState(false);
+  const [activePath, setActivePath] = useState(location.pathname);
+
+  useEffect(() => {
+    setActivePath(location.pathname);
+  }, [location]);
+
+  const logout = () => {
+    navigate("/login");
+    localStorage.removeItem("auth");
+    localStorage.removeItem("access_token");
+    context?.setLogin(false);
+  };
 
   const itemsMenuStart = (
     <span className="inline-flex align-items-center gap-1 px-2 py-2">
@@ -20,17 +38,43 @@ const Index = (props) => {
 
   const itemsMenuEnd = (
     <div>
-      <label className="p-mr-2 text-white font-bold">
-        Ажилтны код: {userData?.code}
-      </label>
+      <div onClick={() => setVisible(true)}>
+        <label className="p-mr-2 text-white font-bold hover:cursor-pointer">
+          Ажилтны код: {userData?.code}
+        </label>
+      </div>
+      <Dialog visible={visible} onHide={() => setVisible(false)}>
+        <div className="flex flex-column">
+          <div className="field">
+            <label className="label">Ажилтны код: {userData?.code}</label>
+          </div>
+          <div className="field">
+            <label className="label">Овог: {userData?.fname}</label>
+          </div>
+          <div className="field">
+            <label className="label">Нэр: {userData?.lname}</label>
+          </div>
+          <div className="field">
+            <label className="label">
+              Төрөл: {UserType?.find((x) => x.value === userData?.role).label}
+            </label>
+          </div>
+          <Button
+            label="Гарах"
+            className="p-button-danger text-xs"
+            icon="pi pi-sign-out"
+            onClick={logout}
+          />
+        </div>
+      </Dialog>
     </div>
   );
 
   const itemRenderer = (item) => {
-    const isActive = location.pathname === item.href;
     const onClick = () => {
       navigate(item?.href);
     };
+    const isActive = activePath === item.href;
 
     return (
       <div
@@ -39,14 +83,18 @@ const Index = (props) => {
         }`}
         onClick={onClick}
       >
-        <span className="flex align-items-center p-menuitem-link">
+        <span
+          className={`flex align-items-center p-menuitem-link ${
+            isActive ? "p-menuitem-active-text" : ""
+          }`}
+        >
           <span className="mx-2">{item?.label}</span>
         </span>
       </div>
     );
   };
 
-  let items = [
+  let adminItems = [
     {
       label: "Хэрэглэгчийн жагсаалт",
       template: itemRenderer,
@@ -67,11 +115,24 @@ const Index = (props) => {
       template: itemRenderer,
       href: "/system",
     },
+    // {
+    //   label: "Мониторинг",
+    //   template: itemRenderer,
+    //   href: "/monitoring",
+    // },
+  ];
+
+  let userItems = [
     {
-      label: "Мониторинг",
+      label: "Систем",
       template: itemRenderer,
-      href: "/monitoring",
+      href: "/system",
     },
+    // {
+    //   label: "Мониторинг",
+    //   template: itemRenderer,
+    //   href: "/monitoring",
+    // },
   ];
 
   const renderRoutes = () =>
@@ -97,28 +158,20 @@ const Index = (props) => {
           <Menubar
             start={itemsMenuStart}
             end={itemsMenuEnd}
-            className="border-none border-bottom-1 bg-bluegray-700"
+            className="border-none border-bottom-1 bg-bluegray-700 border-noround"
           />
         </div>
       </div>
       <div className="grid h-full">
         <div className="col-2 flex justify-content-start">
           <Menu
-            model={items}
+            model={userData?.role === 1 ? adminItems : userItems}
             className="w-full md:w-15rem border-none border-right-1 border-top-1"
           />
         </div>
         <div className="col-10 pr-3 h-full flex justify-content-start">
           <Routes location={location} key={location.pathname}>
-            {/* <Route path={"server"} element={<Containers.Server />} />
-            <Route path={"virtual"} element={<Containers.Virtual />} />
-            <Route path={"user"} element={<Containers.User />} />
-            <Route path={"system"} element={<Containers.System />} />
-            <Route path={"monitoring"} element={<Containers.Monitoring />} />
-            <Route path={"add"} element={<Containers.AddEdit />} />
-            <Route path={"edit"} element={<Containers.AddEdit />} /> */}
             {renderRoutes()}
-            {/* {renderSubRoutes()} */}
           </Routes>
         </div>
       </div>

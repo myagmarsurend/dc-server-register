@@ -154,7 +154,6 @@ export const ServerListColumns = [
     dataIndex: "currentram",
     key: "currentram",
     align: "right",
-    body: (value, record) => (record?.ram || 0) - (record?.usedram || 0),
   },
   {
     title: "Ram нэгж",
@@ -181,7 +180,6 @@ export const ServerListColumns = [
     dataIndex: "currentcpu",
     key: "currentcpu",
     align: "right",
-    body: (value, record) => (record?.cpu || 0) - (record?.usedcpu || 0),
   },
   {
     title: "CPU нэгж",
@@ -325,7 +323,6 @@ export const SystemListColumns = [
     width: 160,
     align: "center",
     body: (value, row, index) => {
-      console.log("🚀 ~ value:", value);
       return (
         <Formatter value={value} format="seemanual" row={row} index={index} />
       );

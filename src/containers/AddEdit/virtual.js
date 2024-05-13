@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 const VirtualAddEdit = () => {
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
+  console.log("🚀 ~ VirtualAddEdit ~ data:", data);
   const header = data ? "Сервер засах" : "Шинэ сервер нэмэх";
   const [hardList, setHardList] = useState([]);
 
@@ -41,7 +42,8 @@ const VirtualAddEdit = () => {
       ramunit: data?.ramunit || RamUnit[0]?.value,
       cpu: data?.cpu || 0,
       cpuunit: data?.cpuunit || CpuUnit[0]?.value,
-      hard: data?.hard || [{ hardname: "", hardcap: 0, _id: null }],
+      hard: data?.hard?._id || { hardname: "", hardcap: 0, _id: null },
+      usedhard: data?.usedhard || 0,
       _id: data?._id || null,
       os: data?.os || VpcType[0]?.value,
     },
@@ -61,15 +63,6 @@ const VirtualAddEdit = () => {
       })) || [];
     setHardList(mappedHardList);
   }, [serverId, context?.resserverlist]);
-
-  const {
-    fields: fieldsHard,
-    append: appendHard,
-    remove: removeHard,
-  } = useFieldArray({
-    control,
-    name: "hard",
-  });
 
   const {
     fields: fieldsIp,
@@ -98,16 +91,14 @@ const VirtualAddEdit = () => {
         model: "vpclist",
         method: "POST",
       });
+      await context?.request({
+        url: `server/getAllServer`,
+        model: "serverlist",
+        method: "POST",
+      });
     } else {
       toast.error(res?.message);
     }
-  };
-
-  const handleAddHard = () => {
-    appendHard({ hardname: "", hardcap: 0 });
-  };
-  const handleRemoveHard = () => {
-    removeHard(fieldsHard.length - 1);
   };
 
   const handleAddIp = () => {
@@ -348,82 +339,66 @@ const VirtualAddEdit = () => {
             <small className="p-error">{errors.cpuunit.message}</small>
           )}
         </div>
-
-        {fieldsHard.map((item, index) => (
-          <div className="flex flex-row gap-2 align-items-center" key={item.id}>
-            <div className="field">
-              <label
-                htmlFor={`hardname-${index}`}
-                className="block text-sm font-medium mb-2"
-              >
-                Hard нэр
-              </label>
-              {/* <InputText
-                {...register(`hard.${index}.hardname`, {
-                  required: "Hard нэр оруулна уу.",
-                })}
-                id={`hardname-${index}`}
-                type="text"
-                placeholder="Hard нэр"
-                className={`w-full text-sm mb-1 ${
-                  errors.hard?.[index]?.hardname ? "p-invalid" : ""
-                }`}
-              /> */}
-              <Controller
-                name={`hard.${index}.hardname`}
-                control={control}
-                rules={{ required: "Hard нэр оруулна уу." }}
-                render={({ field }) => (
+        <div className="flex flex-row gap-2 align-items-center">
+          <div className="field">
+            <label
+              htmlFor={`hard`}
+              className="block text-sm font-medium mb-2"
+            >
+              Hard нэр
+            </label>
+            <Controller
+              name={`hard`}
+              control={control}
+              rules={{ required: "Hard нэр оруулна уу." }}
+              render={({ field }) => {
+                return (
                   <Dropdown
                     {...field}
                     value={field?.value}
-                    id={`hardname-${index}`}
+                    id={`hard`}
                     options={hardList}
                     placeholder="Hard сонгох"
                     className={`w-full text-sm mb-1 ${
-                      errors.hard?.[index]?.hardname ? "p-invalid" : ""
+                      errors.hard ? "p-invalid" : ""
                     }`}
                   />
-                )}
-              />
-              {errors.hard?.[index]?.hardname && (
-                <small className="p-error">
-                  {errors.hard[index].hardname.message}
-                </small>
-              )}
-            </div>
-            <div className="field">
-              <label
-                htmlFor={`hardcap-${index}`}
-                className="block text-sm font-medium mb-1"
-              >
-                Hard эзлэх хэмжээ (GB)
-              </label>
-              <Controller
-                name={`hard.${index}.hardcap`}
-                control={control}
-                rules={{ required: "Hard хэмжээ оруулна уу." }}
-                render={({ field, fieldState }) => (
-                  <InputNumber
-                    {...field}
-                    id={`hardcap-${index}`}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.value)}
-                    placeholder="Hard хэмжээ"
-                    className={`w-full text-sm ${
-                      fieldState.error ? "p-invalid" : ""
-                    }`}
-                  />
-                )}
-              />
-              {errors.hard?.[index]?.hardcap && (
-                <small className="p-error">
-                  {errors.hard[index].hardcap.message}
-                </small>
-              )}
-            </div>
+                );
+              }}
+            />
+            {errors.hard && (
+              <small className="p-error">{errors.hard.message}</small>
+            )}
           </div>
-        ))}
+          <div className="field">
+            <label
+              htmlFor="usedhard"
+              className="block text-sm font-medium mb-1"
+            >
+              Hard эзлэх хэмжээ (GB)
+            </label>
+            <Controller
+              name="usedhard"
+              control={control}
+              rules={{ required: "Hard хэмжээ оруулна уу." }}
+              render={({ field, fieldState }) => (
+                <InputNumber
+                  {...field}
+                  id="usedhard"
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.value)}
+                  placeholder="Hard хэмжээ"
+                  className={`w-full text-sm ${
+                    fieldState.error ? "p-invalid" : ""
+                  }`}
+                />
+              )}
+            />
+            {errors.usedhard && (
+              <small className="p-error">{errors.usedhard.message}</small>
+            )}
+          </div>
+        </div>
 
         {fieldsIp.map((item, index) => (
           <div
@@ -484,25 +459,7 @@ const VirtualAddEdit = () => {
             )}
           </div>
         ))}
-
-        <div className="field">
-          <label htmlFor="hostname" className="block text-sm font-medium mb-2">
-            Hostname
-          </label>
-          <InputText
-            {...register("hostname", { required: "Hostname оруулна уу." })}
-            id="hostname"
-            type="text"
-            placeholder="Hostname"
-            className={`w-full text-sm mb-1 ${
-              errors.hostname ? "p-invalid" : ""
-            }`}
-          />
-          {errors.hostname && (
-            <small className="p-error">{errors.hostname.message}</small>
-          )}
-        </div>
-
+        
         <div className="field">
           <label htmlFor="os" className="block text-sm font-medium mb-2">
             Төрөл

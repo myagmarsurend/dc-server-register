@@ -152,6 +152,7 @@ const Index = ({ columns, data }) => {
             field={col?.field}
             header={col?.header}
             body={col?.body}
+            sortable
             className={`w-${col?.width}rem`}
             // style={{ textAlign: col?.align, width: col?.width + "px" }}
           />

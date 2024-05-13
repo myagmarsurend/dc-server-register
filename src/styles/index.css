@@ -18,3 +18,17 @@ body,
 .p-dropdown-items-wrapper {
   font-size: 0.875rem !important;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.p-menuitem-active {
+  background-color: #64748b;
+  color: white;
+}
+
+.p-menuitem-active-text {
+  color: white;
+}

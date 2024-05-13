@@ -24,7 +24,7 @@ const Formatter = ({ format, value, type, bg }) => {
             background: `${
               value === 1
                 ? "linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 100%)"
-                : "linear-gradient(-225deg, #D78BF8 0%, #00F 48%, #AC32E4 100%)"
+                : "linear-gradient(-225deg, #0F8 0%, #000 48%, #AC32E4 100%)"
             }`,
           }}
         />
@@ -236,7 +236,6 @@ const getSystemType = (value) => {
 };
 
 const ViewManual = (value) => {
-  console.log("🚀 ~ ViewManual ~ value:", value);
   const [visible, setVisible] = useState(false);
 
   return (

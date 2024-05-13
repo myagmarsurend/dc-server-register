@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Table } from "../../components";
+import { SystemListColumns } from "../../enums/columns";
+import { GlobalContext } from "../../context";
 
 const Index = (props) => {
-  return <div>System</div>;
+  const context = useContext(GlobalContext);
+  const data = context?.ressystemlist || [];
+
+  return (
+    <>
+      <Table columns={SystemListColumns} data={data} />
+    </>
+  );
 };
 
 export default Index;

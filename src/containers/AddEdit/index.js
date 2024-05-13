@@ -3,6 +3,9 @@ import { useLocation } from "react-router-dom";
 import UserAddEdit from "./user";
 import { Dialog } from "primereact/dialog";
 import { GlobalContext } from "../../context";
+import ServerAddEdit from "./server";
+import VirtualAddEdit from "./virtual";
+import SystemAddEdit from "./system";
 
 const Index = (props) => {
   const context = useContext(GlobalContext);
@@ -12,6 +15,12 @@ const Index = (props) => {
     switch (location?.pathname) {
       case "/user":
         return <UserAddEdit data={location?.state?.data} />;
+      case "/server":
+        return <ServerAddEdit data={location?.state?.data} />;
+      case "/virtual":
+        return <VirtualAddEdit data={location?.state?.data} />;
+      case "/sytem":
+        return <SystemAddEdit data={location?.state?.data} />;
       default:
         return null;
     }

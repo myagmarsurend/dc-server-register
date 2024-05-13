@@ -1,6 +1,5 @@
 import { Tag } from "primereact/tag";
 import { memo } from "react";
-import { LocationUnit } from "../enums/enum";
 import moment from "moment";
 
 const Formatter = ({ format, value, type, bg }) => {
@@ -34,8 +33,12 @@ const Formatter = ({ format, value, type, bg }) => {
       return getRamUnit(value);
     case "cpuunit":
       return getCpuUnit(value);
+    case "os":
+      return getOsUnit(value);
     case "date":
       return value && moment(value).format("YYYY-MM-DD");
+    case "systemtype":
+      return getSystemType(value);
     default:
       return <Tag value={value} severity={type} />;
   }
@@ -43,7 +46,7 @@ const Formatter = ({ format, value, type, bg }) => {
 
 const getLocationTypeTag = (value) => {
   switch (value) {
-    case LocationUnit.Салбар_1:
+    case 1:
       return (
         <Tag
           value="Салбар-1"
@@ -51,36 +54,36 @@ const getLocationTypeTag = (value) => {
           style={{ backgroundColor: "GrayText" }}
         />
       );
-    case LocationUnit.Салбар_2:
+    case 2:
       return (
         <Tag
           value="Салбар-2"
           className="w-full"
-          style={{ backgroundColor: "GrayText" }}
+          style={{ backgroundColor: "ActiveBorder" }}
         />
       );
-    case LocationUnit.Салбар_3:
+    case 3:
       return (
         <Tag
           value="Салбар-3"
           className="w-full"
-          style={{ backgroundColor: "GrayText" }}
+          style={{ backgroundColor: "ButtonFace" }}
         />
       );
-    case LocationUnit.Салбар_4:
+    case 4:
       return (
         <Tag
           value="Салбар-4"
           className="w-full"
-          style={{ backgroundColor: "GrayText" }}
+          style={{ backgroundColor: "burlywood" }}
         />
       );
-    case LocationUnit.Mobicom:
+    case 5:
       return (
         <Tag
           value="Mobicom"
           className="w-full"
-          style={{ backgroundColor: "GrayText" }}
+          style={{ backgroundColor: "InfoText" }}
         />
       );
     default:
@@ -140,6 +143,92 @@ const getCpuUnit = (value) => {
         }}
       />
     );
+};
+
+const getOsUnit = (value) => {
+  switch (value) {
+    case 1:
+      return (
+        <Tag
+          value="Windows"
+          className="w-full"
+          style={{ backgroundColor: "GrayText" }}
+        />
+      );
+    case 2:
+      return (
+        <Tag
+          value="Ubuntu 20.04"
+          className="w-full"
+          style={{ backgroundColor: "ActiveBorder" }}
+        />
+      );
+    case 3:
+      return (
+        <Tag
+          value="Ubuntu 22.04"
+          className="w-full"
+          style={{ backgroundColor: "ButtonFace" }}
+        />
+      );
+    case 4:
+      return (
+        <Tag
+          value="Ubuntu 18.04"
+          className="w-full"
+          style={{ backgroundColor: "burlywood" }}
+        />
+      );
+    case 5:
+      return (
+        <Tag
+          value="CentOs"
+          className="w-full"
+          style={{ backgroundColor: "InfoText" }}
+        />
+      );
+    default:
+      return null;
+  }
+};
+
+const getSystemType = (value) => {
+  switch (value) {
+    case 1:
+      return (
+        <Tag
+          value="UI"
+          className="w-full"
+          style={{ backgroundColor: "green" }}
+        />
+      );
+    case 2:
+      return (
+        <Tag
+          value="DB"
+          className="w-full"
+          style={{ backgroundColor: "orange" }}
+        />
+      );
+    case 3:
+      return (
+        <Tag
+          value="API"
+          className="w-full"
+          style={{ backgroundColor: "blue" }}
+        />
+      );
+    case 4:
+      return (
+        <Tag
+          value="OTHER"
+          className="w-full"
+          style={{ backgroundColor: "black" }}
+        />
+      );
+    default:
+      return null;
+  }
 };
 
 export default memo(Formatter);

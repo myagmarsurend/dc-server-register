@@ -104,10 +104,10 @@ export const ServerListColumns = [
     dataIndex: "usedhard",
     key: "usedhard",
     align: "right",
-    body: (value, record) => {
+    body: (rowData) => {
       return (
         <span>
-          {record?.hard?.map((i, j) => {
+          {rowData?.map((i, j) => {
             return (
               <span key={j}>
                 {i?.hardname}-{i?.hardusedcap} <br />
@@ -123,10 +123,10 @@ export const ServerListColumns = [
     dataIndex: "currenthard",
     key: "currenthard",
     align: "right",
-    body: (value, record) => {
+    body: (rowData) => {
       return (
         <span>
-          {record?.hard?.map((i, j) => {
+          {rowData?.map((i, j) => {
             return (
               <span key={j}>
                 {i?.hardname}-{i?.hardcap - i?.hardusedcap} <br />
@@ -198,4 +198,134 @@ export const ServerListColumns = [
     align: "center",
   },
   InsYmdColumn,
+];
+
+export const VpcColumns = [
+  {
+    title: "Нэр",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Ip Address",
+    dataIndex: "ipaddress",
+    key: "ipaddress",
+    align: "center",
+    body: (value) => {
+      if (value?.length === 1) return <span>{value[0]}</span>;
+      else return <span>{value?.map((i) => i + ", ")}</span>;
+    },
+  },
+  {
+    title: "Домайн нэр",
+    dataIndex: "dns",
+    key: "dns",
+  },
+  {
+    title: "Нэвтрэх нэр",
+    dataIndex: "username",
+    key: "username",
+  },
+  {
+    title: "Үйлдлийн систем",
+    dataIndex: "os",
+    key: "os",
+    width: 100,
+    body: (value) => <Formatter value={value} format="os" />,
+  },
+  {
+    title: "Ram",
+    dataIndex: "ram",
+    key: "ram",
+    align: "right",
+  },
+  {
+    title: "Ram нэгж",
+    dataIndex: "ramunit",
+    key: "ramunit",
+    width: 50,
+    body: (value) => <Formatter value={value} format="ramunit" />,
+  },
+  {
+    title: "CPU",
+    dataIndex: "cpu",
+    key: "cpu",
+    width: 100,
+    align: "right",
+  },
+  {
+    title: "CPU нэгж",
+    dataIndex: "cpuunit",
+    key: "cpuunit",
+    width: 50,
+    body: (value) => <Formatter value={value} format="cpuunit" />,
+  },
+  {
+    title: "Server address",
+    dataIndex: "server",
+    key: "server",
+    width: 150,
+    align: "center",
+    body: (value) => {
+      if (value?.ipaddress?.length === 1)
+        return <span>{value?.ipaddress[0]}</span>;
+      else return <span>{value?.ipaddress?.map((i) => i + ", ")}</span>;
+    },
+  },
+];
+
+export const SystemListColumns = [
+  {
+    title: "Нэр",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Төрөл",
+    dataIndex: "type",
+    key: "type",
+    width: 100,
+    body: (value, row, index) => (
+      <Formatter value={value} format="systemtype" row={row} index={index} />
+    ),
+  },
+  {
+    title: "Real server",
+    dataIndex: "virtual",
+    key: "virtual",
+    align: "center",
+    body: (value, row) => {
+      return `${row?.virtual?.ipaddress[0]}:${row?.port}`;
+    },
+  },
+  {
+    title: "Real domain",
+    dataIndex: "domain",
+    align: "center",
+    key: "domain",
+  },
+  {
+    title: "Test server",
+    dataIndex: "virtual",
+    key: "virtual",
+    align: "center",
+    body: (value, row) => {
+      return `${row?.testvirtual?.ipaddress[0]}:${row?.testport}`;
+    },
+  },
+  {
+    title: "Test domain",
+    dataIndex: "testdomain",
+    key: "testdomain",
+  },
+  {
+    title: "Гарын авлага",
+    dataIndex: "manual",
+    key: "manual",
+    width: 160,
+    align: "center",
+    body: (value, row, index) => (
+      <Formatter value={value} format="seemanual" row={row} index={index} />
+    ),
+  },
 ];

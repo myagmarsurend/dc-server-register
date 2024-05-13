@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { UserType } from "../../enums/enum";
@@ -11,18 +12,11 @@ import toast from "react-hot-toast";
 const UserAddEdit = () => {
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
-  console.log("🚀 ~ UserAddEdit ~ data:", data);
   const header = data ? "Хэрэглэгч засах" : "Шинэ хэрэглэгч нэмэх";
-
-  const roleOptions = [
-    { label: "Админ", value: UserType.Admin },
-    { label: "Хэрэглэгч", value: UserType.User },
-  ];
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
     reset,
     control,
@@ -40,7 +34,7 @@ const UserAddEdit = () => {
   });
 
   const handleSave = async (data) => {
-    console.log("handleSave ~ data:", data)
+    console.log("handleSave ~ data:", data);
     const res = await context?.request({
       method: "POST",
       url: "user/addUser",
@@ -71,12 +65,22 @@ const UserAddEdit = () => {
           <label htmlFor="code" className="block text-sm font-medium mb-2">
             Ажилчны код
           </label>
-          <InputText
-            {...register("code", { required: "Ажилтны кодоо оруулна уу." })}
-            id="code"
-            type="text"
-            placeholder="Ажилчны код"
-            className={`w-full text-sm mb-1 ${errors.code ? "p-invalid" : ""}`}
+          <Controller
+            name="code"
+            control={control}
+            rules={{ required: "Ажилтны кодоо оруулна уу." }}
+            render={({ field, fieldState }) => (
+              <InputNumber
+                {...field}
+                id="code"
+                value={field.value}
+                onChange={(e) => field.onChange(e.value)}
+                placeholder="Ажилчны код"
+                className={`w-full text-sm ${
+                  fieldState.error ? "p-invalid" : ""
+                }`}
+              />
+            )}
           />
           {errors.code && (
             <small className="p-error">{errors.code.message}</small>
@@ -92,10 +96,10 @@ const UserAddEdit = () => {
             id="fname"
             type="text"
             placeholder="Овог"
-            className={`w-full text-sm mb-1 ${errors.code ? "p-invalid" : ""}`}
+            className={`w-full text-sm mb-1 ${errors.fname ? "p-invalid" : ""}`}
           />
-          {errors.code && (
-            <small className="p-error">{errors.code.message}</small>
+          {errors.fname && (
+            <small className="p-error">{errors.fname.message}</small>
           )}
         </div>
         <div className="field">
@@ -107,10 +111,10 @@ const UserAddEdit = () => {
             id="lname"
             type="text"
             placeholder="Нэр"
-            className={`w-full text-sm mb-1 ${errors.code ? "p-invalid" : ""}`}
+            className={`w-full text-sm mb-1 ${errors.lname ? "p-invalid" : ""}`}
           />
-          {errors.code && (
-            <small className="p-error">{errors.code.message}</small>
+          {errors.lname && (
+            <small className="p-error">{errors.lname.message}</small>
           )}
         </div>
 
@@ -127,7 +131,7 @@ const UserAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="role"
-                options={roleOptions}
+                options={UserType}
                 placeholder="Роль сонгох"
                 className={`w-full text-sm ${errors.role ? "p-invalid" : ""}`}
               />

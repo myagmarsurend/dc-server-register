@@ -14,16 +14,13 @@ import { Button } from "primereact/button";
 import { Tooltip } from "primereact/tooltip";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
-import { useLocation, useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import { GlobalContext } from "../../context";
 
 const Index = ({ columns, data }) => {
   const datas = data || [];
-  const navigate = useNavigate();
   const context = useContext(GlobalContext);
   const dt = useRef(null);
-  const location = useLocation();
   const [globalFilterValue, setGlobalFilterValue] = useState("");
 
   const cols = useMemo(() => {

@@ -1,53 +1,51 @@
-/* Программ тай холбоотой тогтмол утгууд болон enum ууд */
+export const RamUnit = [
+  { value: 1, label: "GB" },
+  { value: 2, label: "MB" },
+];
 
-export const RamUnit = {
-  GB: 1,
-  MB: 2,
-};
+export const SystemType = [
+  { value: 1, label: "UI" },
+  { value: 2, label: "DB" },
+  { value: 3, label: "API" },
+  { value: 4, label: "OTHER" },
+];
 
-export const SystemType = {
-  UI: 1,
-  DB: 2,
-  API: 3,
-  OTHER: 4,
-};
+export const VpcType = [
+  { value: 1, label: "Windows" },
+  { value: 2, label: "Ubuntu 20.04" },
+  { value: 3, label: "Ubuntu 22.04" },
+  { value: 4, label: "Ubuntu 18.04" },
+  { value: 5, label: "CentOs" },
+];
 
-export const VpcType = {
-  Windows: 1,
-  Ubuntu_20_04: 2,
-  Ubuntu_22_04: 3,
-  Ubuntu_18_04: 4,
-  CentOs: 5,
-};
+export const HardUnit = [
+  { value: 3, label: "TB" },
+  { value: 1, label: "GB" },
+  { value: 2, label: "MB" },
+];
 
-export const HardUnit = {
-  TB: 3,
-  GB: 1,
-  MB: 2,
-};
+export const CpuUnit = [
+  { value: 1, label: "MHz" },
+  { value: 2, label: "GHz" },
+];
 
-export const CpuUnit = {
-  MHz: 1,
-  GHz: 2,
-};
+export const LocationUnit = [
+  { value: 1, label: "Салбар 1" },
+  { value: 2, label: "Салбар 2" },
+  { value: 3, label: "Салбар 3" },
+  { value: 4, label: "Салбар 4" },
+  { value: 5, label: "Mobicom" },
+];
 
-export const LocationUnit = {
-  Салбар_1: 1,
-  Салбар_2: 2,
-  Салбар_3: 3,
-  Салбар_4: 4,
-  Mobicom: 5,
-};
+export const RegType = [
+  { value: 1, label: "OS" },
+  { value: 2, label: "DataBase" },
+];
 
-export const RegType = {
-  OS: 1,
-  DataBase: 2,
-};
-
-export const UserType = {
-  Admin: 1,
-  User: 2,
-};
+export const UserType = [
+  { value: 1, label: "Admin" },
+  { value: 2, label: "User" },
+];
 
 export const IsEnable = [
   { value: 1, label: "Идэвхтэй" },

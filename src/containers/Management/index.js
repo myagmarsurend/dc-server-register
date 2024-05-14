@@ -146,11 +146,11 @@ const Index = () => {
       template: itemRenderer,
       href: "/system",
     },
-    // {
-    //   label: "Мониторинг",
-    //   template: itemRenderer,
-    //   href: "/monitoring",
-    // },
+    {
+      label: "Виртуал",
+      template: itemRenderer,
+      href: "/virtual",
+    },
   ];
 
   const renderRoutes = () =>

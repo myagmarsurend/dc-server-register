@@ -7,6 +7,7 @@ import { Dropdown } from "primereact/dropdown";
 import { CpuUnit, LocationUnit, RamUnit } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
+import { Password } from "primereact/password";
 
 const ServerAddEdit = () => {
   const context = useContext(GlobalContext);
@@ -19,6 +20,7 @@ const ServerAddEdit = () => {
     formState: { errors },
     reset,
     control,
+    watch,
   } = useForm({
     defaultValues: {
       name: data?.name || "",
@@ -36,6 +38,8 @@ const ServerAddEdit = () => {
       _id: data?._id || null,
     },
   });
+
+  const password = watch("password");
 
   const {
     fields: fieldsHard,
@@ -424,14 +428,22 @@ const ServerAddEdit = () => {
               >
                 Нууц үг
               </label>
-              <InputText
-                {...register("password", { required: "Нууц үгээ оруулна уу." })}
-                id="password"
-                type="password"
-                placeholder="Нууц үг"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
+              <Controller
+                name="password"
+                control={control}
+                rules={{ required: "Нууц үгээ оруулна уу." }}
+                render={({ field }) => (
+                  <Password
+                    id="password"
+                    value={field?.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    placeholder="Нууц үг"
+                    className={`w-full text-sm mb-1 ${
+                      errors.password ? "p-invalid" : ""
+                    }`}
+                    toggleMask
+                  />
+                )}
               />
               {errors.password && (
                 <small className="p-error">{errors.password.message}</small>
@@ -444,19 +456,30 @@ const ServerAddEdit = () => {
               >
                 Нууц үг давтах
               </label>
-              <InputText
-                {...register("passwordAgain", {
-                  required: "Нууц үгээ давтаж оруулна уу.",
-                })}
-                id="passwordAgain"
-                type="password"
-                placeholder="Нууц үг давтах"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
+              <Controller
+                name="passwordAgain"
+                control={control}
+                rules={{
+                  validate: (value) =>
+                    value === password || "Нууц үг таарахгүй байна.",
+                }}
+                render={({ field }) => (
+                  <Password
+                    id="passwordAgain"
+                    value={field?.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    placeholder="Нууц үг давтах"
+                    className={`w-full text-sm mb-1 ${
+                      errors.passwordAgain ? "p-invalid" : ""
+                    }`}
+                    toggleMask
+                  />
+                )}
               />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
+              {errors.passwordAgain && (
+                <small className="p-error">
+                  {errors.passwordAgain.message}
+                </small>
               )}
             </div>
           </>

@@ -123,3 +123,4 @@ export const SITE_NAME = "Сервер бүртгэл";
 export const PASSWORD_VALIDATOR = [
   { required: true, message: "Нууц үг оруулна уу." },
 ];
+export const PASSWORD_SECRET = "DCSERVERS1PASS2WORD3SECRET";

@@ -1,17 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
+import { Password } from "primereact/password";
 import { UserType } from "../../enums/enum";
 import { IsEnable } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
+import CryptoJS from "crypto-js";
+import { PASSWORD_SECRET } from "../../context/state";
+import decryptWithAES from "../../utils/decrypt";
 
 const UserAddEdit = () => {
+  const userData = JSON.parse(localStorage.getItem("auth"));
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
   const header = data ? "Хэрэглэгч засах" : "Шинэ хэрэглэгч нэмэх";
+  const [decryptedPass, setDecryptedPass] = useState();
 
   const {
     register,
@@ -19,6 +25,7 @@ const UserAddEdit = () => {
     formState: { errors },
     reset,
     control,
+    watch,
   } = useForm({
     defaultValues: {
       code: data?.code || "",
@@ -31,6 +38,26 @@ const UserAddEdit = () => {
       _id: data?._id || null,
     },
   });
+
+  const password = watch("password");
+
+  useEffect(() => {
+    if (data && password) {
+      // console.log(
+      //   "🚀 ~ useEffect ~ decrypted:",
+      //   CryptoJS.enc.Utf8.parse(PASSWORD_SECRET)
+      // );
+      // let decrypted = CryptoJS.AES.decrypt(
+      //   password,
+      //   PASSWORD_SECRET.toString()
+      // );
+
+      let decrypted = decryptWithAES(password, PASSWORD_SECRET);
+      console.log("🚀 ~ useEffect ~ decrypted:", decrypted);
+
+      setDecryptedPass(decrypted);
+    }
+  }, [password]);
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
@@ -130,51 +157,72 @@ const UserAddEdit = () => {
             <small className="p-error">{errors.role.message}</small>
           )}
         </div>
+
+        {userData?.role === 1 && (
+          <div className="field">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+            >
+              Нууц үг
+            </label>
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: "Нууц үгээ оруулна уу." }}
+              render={({ field }) => (
+                <Password
+                  id="password"
+                  // value={field?.value}
+                  value={decryptedPass}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder="Нууц үг"
+                  className={`w-full text-sm mb-1 ${
+                    errors.password ? "p-invalid" : ""
+                  }`}
+                  disabled={data}
+                  toggleMask
+                />
+              )}
+            />
+            {errors.password && (
+              <small className="p-error">{errors.password.message}</small>
+            )}
+          </div>
+        )}
+
         {!data && (
-          <>
-            <div className="field">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг
-              </label>
-              <InputText
-                {...register("password", { required: "Нууц үгээ оруулна уу." })}
-                id="password"
-                type="password"
-                placeholder="Нууц үг"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
-              />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
+          <div className="field">
+            <label
+              htmlFor="passwordAgain"
+              className="block text-sm font-medium mb-2"
+            >
+              Нууц үг давтах
+            </label>
+            <Controller
+              name="passwordAgain"
+              control={control}
+              rules={{
+                validate: (value) =>
+                  value === password || "Нууц үг таарахгүй байна.",
+              }}
+              render={({ field }) => (
+                <Password
+                  id="passwordAgain"
+                  value={field?.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder="Нууц үг давтах"
+                  className={`w-full text-sm mb-1 ${
+                    errors.passwordAgain ? "p-invalid" : ""
+                  }`}
+                  toggleMask
+                />
               )}
-            </div>
-            <div className="field">
-              <label
-                htmlFor="passwordAgain"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг давтах
-              </label>
-              <InputText
-                {...register("passwordAgain", {
-                  required: "Нууц үгээ давтаж оруулна уу.",
-                })}
-                id="passwordAgain"
-                type="password"
-                placeholder="Нууц үг давтах"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
-              />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
-              )}
-            </div>
-          </>
+            />
+            {errors.passwordAgain && (
+              <small className="p-error">{errors.passwordAgain.message}</small>
+            )}
+          </div>
         )}
         <div className="field">
           <label htmlFor="isenable" className="block text-sm font-medium mb-2">

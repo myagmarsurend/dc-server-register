@@ -9,12 +9,15 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { GlobalContext } from "../../context";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 const Index = ({ columns, data }) => {
+  const userData = JSON.parse(localStorage.getItem("auth"));
   const datas = data || [];
   const context = useContext(GlobalContext);
   const dt = useRef(null);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [visibleDelete, setVisibleDelete] = useState(false);
 
   const cols = useMemo(() => {
     return (
@@ -118,6 +121,8 @@ const Index = ({ columns, data }) => {
     context?.setModal({ visible: true, data: e.data });
   };
 
+  const handleDelete = (e) => {};
+
   return (
     <div className="card w-full">
       <DataTable
@@ -155,7 +160,39 @@ const Index = ({ columns, data }) => {
             // style={{ textAlign: col?.align, width: col?.width + "px" }}
           />
         ))}
+        {userData?.role === 1 && (
+          <Column
+            header="Үйлдэл"
+            body={(_, { rowIndex }) => {
+              return (
+                <Button
+                  className="p-button p-component p-button-icon-only p-button-rounded p-button-warning text-xs"
+                  icon="pi pi-trash"
+                  onClick={() => setVisibleDelete(true)}
+                  tooltip="Устгах"
+                  tooltipOptions={{ position: "left", className: "text-xs" }}
+                />
+              );
+            }}
+            className="w-1rem"
+          />
+        )}
       </DataTable>
+      <ConfirmDialog
+        visible={visibleDelete}
+        onHide={() => setVisibleDelete(false)}
+        message="Та устгахдаа итгэлтэй байна уу?"
+        header="Устгах эсэх"
+        accept={handleDelete}
+        acceptLabel="Тийм"
+        reject={() => setVisibleDelete(false)}
+        rejectLabel="Үгүй"
+        // className="text-xs"
+        acceptClassName="text-xs bg-red-500 border-none"
+        rejectClassName="text-xs bg-green-500 border-none"
+        headerClassName="text-xs"
+        icon="pi pi-exclamation-triangle"
+      />
     </div>
   );
 };

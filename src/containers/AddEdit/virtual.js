@@ -7,12 +7,12 @@ import { Dropdown } from "primereact/dropdown";
 import { CpuUnit, RamUnit, VpcType } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
+import { Password } from "primereact/password";
 
 const VirtualAddEdit = () => {
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
-  console.log("🚀 ~ VirtualAddEdit ~ data:", data);
-  const header = data ? "Сервер засах" : "Шинэ сервер нэмэх";
+  const header = data ? "Виртуал засах" : "Шинэ виртуал нэмэх";
   const [hardList, setHardList] = useState([]);
 
   const serverList = (context?.resserverlist || [])?.map?.((item, index) => {
@@ -49,6 +49,7 @@ const VirtualAddEdit = () => {
     },
   });
 
+  const password = watch("password");
   const serverId = watch("server");
   useEffect(() => {
     const selectedServer = context?.resserverlist?.find(
@@ -146,52 +147,63 @@ const VirtualAddEdit = () => {
             <small className="p-error">{errors.username.message}</small>
           )}
         </div>
-
-        {!data && (
-          <>
-            <div className="field">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг
-              </label>
-              <InputText
-                {...register("password", { required: "Нууц үгээ оруулна уу." })}
+        <div className="field">
+          <label htmlFor="password" className="block text-sm font-medium mb-2">
+            Нууц үг
+          </label>
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: "Нууц үгээ оруулна уу." }}
+            render={({ field }) => (
+              <Password
                 id="password"
-                type="password"
+                value={field?.value}
+                onChange={(e) => field.onChange(e.target.value)}
                 placeholder="Нууц үг"
                 className={`w-full text-sm mb-1 ${
                   errors.password ? "p-invalid" : ""
                 }`}
+                toggleMask
               />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
+            )}
+          />
+          {errors.password && (
+            <small className="p-error">{errors.password.message}</small>
+          )}
+        </div>
+        {!data && (
+          <div className="field">
+            <label
+              htmlFor="passwordAgain"
+              className="block text-sm font-medium mb-2"
+            >
+              Нууц үг давтах
+            </label>
+            <Controller
+              name="passwordAgain"
+              control={control}
+              rules={{
+                validate: (value) =>
+                  value === password || "Нууц үг таарахгүй байна.",
+              }}
+              render={({ field }) => (
+                <Password
+                  id="passwordAgain"
+                  value={field?.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder="Нууц үг давтах"
+                  className={`w-full text-sm mb-1 ${
+                    errors.passwordAgain ? "p-invalid" : ""
+                  }`}
+                  toggleMask
+                />
               )}
-            </div>
-            <div className="field">
-              <label
-                htmlFor="passwordAgain"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг давтах
-              </label>
-              <InputText
-                {...register("passwordAgain", {
-                  required: "Нууц үгээ давтаж оруулна уу.",
-                })}
-                id="passwordAgain"
-                type="password"
-                placeholder="Нууц үг давтах"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
-              />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
-              )}
-            </div>
-          </>
+            />
+            {errors.passwordAgain && (
+              <small className="p-error">{errors.passwordAgain.message}</small>
+            )}
+          </div>
         )}
 
         <div className="field">
@@ -341,10 +353,7 @@ const VirtualAddEdit = () => {
         </div>
         <div className="flex flex-row gap-2 align-items-center">
           <div className="field">
-            <label
-              htmlFor={`hard`}
-              className="block text-sm font-medium mb-2"
-            >
+            <label htmlFor={`hard`} className="block text-sm font-medium mb-2">
               Hard нэр
             </label>
             <Controller
@@ -459,7 +468,7 @@ const VirtualAddEdit = () => {
             )}
           </div>
         ))}
-        
+
         <div className="field">
           <label htmlFor="os" className="block text-sm font-medium mb-2">
             Төрөл

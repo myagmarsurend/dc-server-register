@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { UserType } from "../../enums/enum";

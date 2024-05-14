@@ -17,13 +17,13 @@ import "primereact/resources/themes/tailwind-light/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 
-const isProduction = process.env.NODE_ENV === "production";
+// const isProduction = process.env.NODE_ENV === "production";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <CacheBuster
     currentVersion={packageJson.version}
-    isEnabled={isProduction} //If false, the library is disabled.
+    isEnabled={false} //If false, the library is disabled.
     isVerboseMode={false} //If true, the library writes verbose logs to console.
     loadingComponent={<ProgressSpinner />}
   >

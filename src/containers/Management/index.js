@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
 import { Menu } from "primereact/menu";
 import { Menubar } from "primereact/menubar";
 import { ROUTES } from "../../enums/routes";
 import * as Containers from "../";
 import { GlobalContext } from "../../context";
-import { Dialog } from "primereact/dialog";
-import { UserType } from "../../enums/enum";
 import { Button } from "primereact/button";
+import { useClickOutside } from "primereact/hooks";
 
 const Index = () => {
   const userData = JSON.parse(localStorage.getItem("auth"));
@@ -16,6 +15,11 @@ const Index = () => {
   const context = useContext(GlobalContext);
   const [visible, setVisible] = useState(false);
   const [activePath, setActivePath] = useState(location.pathname);
+  const overlayRef = useRef(null);
+
+  useClickOutside(overlayRef, () => {
+    setVisible(false);
+  });
 
   useEffect(() => {
     setActivePath(location.pathname);
@@ -37,13 +41,13 @@ const Index = () => {
   );
 
   const itemsMenuEnd = (
-    <div>
+    <div className="relative">
       <div onClick={() => setVisible(true)}>
         <label className="p-mr-2 text-white font-bold hover:cursor-pointer">
           Ажилтны код: {userData?.code}
         </label>
       </div>
-      <Dialog visible={visible} onHide={() => setVisible(false)}>
+      {/* <Dialog visible={visible} onHide={() => setVisible(false)}>
         <div className="flex flex-column">
           <div className="field">
             <label className="label">Ажилтны код: {userData?.code}</label>
@@ -51,7 +55,8 @@ const Index = () => {
           <div className="field">
             <label className="label">Овог: {userData?.fname}</label>
           </div>
-          <div className="field">
+          <div className="field">h
+
             <label className="label">Нэр: {userData?.lname}</label>
           </div>
           <div className="field">
@@ -66,7 +71,20 @@ const Index = () => {
             onClick={logout}
           />
         </div>
-      </Dialog>
+      </Dialog> */}
+      {visible ? (
+        <div
+          ref={overlayRef}
+          className="absolute w-full text-center border-round shadow-2 surface-overlay z-2 white-space-nowrap scalein origin-top mt-2"
+        >
+          <Button
+            label="Гарах"
+            className="p-button-danger text-xs my-2"
+            icon="pi pi-sign-out"
+            onClick={logout}
+          />
+        </div>
+      ) : null}
     </div>
   );
 

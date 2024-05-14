@@ -1,14 +1,5 @@
 import Formatter from "../utils/data-formatter";
 
-const StatusColumn = {
-  title: "Төлөв",
-  dataIndex: "isenable",
-  key: "isenable",
-  // align: "center",
-  width: 100,
-  body: (value) => <Formatter value={value} format="isenable" />,
-};
-
 const InsYmdColumn = {
   title: "Бүртгэсэн огноо",
   dataIndex: "insymd",
@@ -40,8 +31,16 @@ export const UserListColumns = [
     dataIndex: "role",
     key: "role",
     body: (value) => <Formatter value={value} format="role" />,
+    filter: true,
+    showFilterMenu: false,
   },
-  StatusColumn,
+  {
+    title: "Төлөв",
+    dataIndex: "isenable",
+    key: "isenable",
+    width: 100,
+    body: (value) => <Formatter value={value} format="isenable" />,
+  },
 ];
 
 export const ServerListColumns = [
@@ -270,6 +269,7 @@ export const VpcColumns = [
       else return <span>{value?.ipaddress?.map((i) => i + ", ")}</span>;
     },
   },
+  InsYmdColumn,
 ];
 
 export const SystemListColumns = [
@@ -328,4 +328,5 @@ export const SystemListColumns = [
       );
     },
   },
+  InsYmdColumn,
 ];

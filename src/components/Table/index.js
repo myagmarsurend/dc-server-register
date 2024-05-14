@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { memo, useContext, useMemo, useRef, useState } from "react";
 import * as xlsx from "xlsx";
 import module from "file-saver";
 import { DataTable } from "primereact/datatable";
@@ -41,11 +34,11 @@ const Index = ({ columns, data }) => {
     );
   }, [columns]);
 
-  const onGlobalFilterChange = useCallback((e) => {
+  const onGlobalFilterChange = (e) => {
     const value = e.target.value;
 
     setGlobalFilterValue(value);
-  }, []);
+  };
 
   const exportExcel = async () => {
     try {
@@ -134,6 +127,8 @@ const Index = ({ columns, data }) => {
         paginator
         rows={5}
         rowsPerPageOptions={[5, 10, 25, 50]}
+        globalFilter={globalFilterValue}
+        selectionMode="single"
         tableStyle={{ minWidth: "50rem" }}
         paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         currentPageReportTemplate="{first} to {last} of {totalRecords}"
@@ -154,6 +149,9 @@ const Index = ({ columns, data }) => {
             body={col?.body}
             sortable
             className={`w-${col?.width}rem`}
+            filter={col?.filter}
+            filterField={col?.filterField}
+            showFilterMenu={col?.showFilterMenu}
             // style={{ textAlign: col?.align, width: col?.width + "px" }}
           />
         ))}

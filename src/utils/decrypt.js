@@ -1,17 +1,17 @@
 import CryptoJS from "crypto-js";
 
 export default function decryptWithAES(ciphertext, secretKey) {
-  const iv = CryptoJS.enc.Hex.parse(ciphertext.substr(0, 32)); // Extracts the first 16 bytes (32 hex characters) for the IV
-  const encrypted = ciphertext.slice(32); // the rest is the actual ciphertext
-  const decrypted = CryptoJS.AES.decrypt(
-    encrypted,
-    CryptoJS.enc.Utf8.parse(secretKey),
-    {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7,
-    }
-  );
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
 
-  return decrypted.toString(CryptoJS.enc.Utf8); // Convert to UTF8 string
+    if (bytes.sigBytes > 0) {
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      return decrypted;
+    } else {
+      throw new Error("Decryption failed");
+    }
+  } catch (error) {
+    console.error("🚀 ~ decryptWithAES ~ error", error);
+    throw new Error("Invalid decryption key or corrupted ciphertext");
+  }
 }

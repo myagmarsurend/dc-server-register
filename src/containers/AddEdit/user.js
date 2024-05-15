@@ -8,9 +8,8 @@ import { UserType } from "../../enums/enum";
 import { IsEnable } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
-import CryptoJS from "crypto-js";
 import { PASSWORD_SECRET } from "../../context/state";
-import decryptWithAES from "../../utils/decrypt";
+import decrypt from "../../utils/decrypt";
 
 const UserAddEdit = () => {
   const userData = JSON.parse(localStorage.getItem("auth"));
@@ -43,18 +42,7 @@ const UserAddEdit = () => {
 
   useEffect(() => {
     if (data && password) {
-      // console.log(
-      //   "🚀 ~ useEffect ~ decrypted:",
-      //   CryptoJS.enc.Utf8.parse(PASSWORD_SECRET)
-      // );
-      // let decrypted = CryptoJS.AES.decrypt(
-      //   password,
-      //   PASSWORD_SECRET.toString()
-      // );
-
-      let decrypted = decryptWithAES(password, PASSWORD_SECRET);
-      console.log("🚀 ~ useEffect ~ decrypted:", decrypted);
-
+      let decrypted = decrypt(password, PASSWORD_SECRET);
       setDecryptedPass(decrypted);
     }
   }, [password]);

@@ -1,11 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
 
 const Index = () => {
   const context = useContext(GlobalContext);
@@ -15,6 +16,7 @@ const Index = () => {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -82,12 +84,22 @@ const Index = () => {
           <label htmlFor="password" className="block text-900 font-medium mb-2">
             Нууц үг
           </label>
-          <InputText
-            {...register("password", { required: "Нууц үгээ оруулна уу." })}
-            id="password"
-            type="password"
-            placeholder="Нууц үг"
-            className={`w-full mb-3 ${errors.password ? "p-invalid" : ""}`}
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: "Нууц үгээ оруулна уу." }}
+            render={({ field }) => (
+              <Password
+                id="password"
+                value={field?.value}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder="Нууц үг"
+                className={`w-full text-sm mb-1 ${
+                  errors.password ? "p-invalid" : ""
+                }`}
+                toggleMask
+              />
+            )}
           />
           {errors.password && (
             <small className="p-error">{errors.password.message}</small>

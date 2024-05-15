@@ -4,8 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { Password } from "primereact/password";
-import { UserType } from "../../enums/enum";
-import { IsEnable } from "../../enums/enum";
+import { UserType, IsEnable } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
 import { PASSWORD_SECRET } from "../../context/state";
@@ -30,10 +29,10 @@ const UserAddEdit = () => {
       code: data?.code || "",
       fname: data?.fname || "",
       lname: data?.lname || "",
-      role: data?.role || UserType.User,
+      role: data?.role || UserType[0].value,
       password: data?.password || "",
       passwordAgain: data?.password || "",
-      isenable: data?.isenable || 1,
+      isenable: data?.isenable || IsEnable[1].value,
       _id: data?._id || null,
     },
   });
@@ -161,8 +160,7 @@ const UserAddEdit = () => {
               render={({ field }) => (
                 <Password
                   id="password"
-                  // value={field?.value}
-                  value={decryptedPass}
+                  value={decryptedPass || field?.value}
                   onChange={(e) => field.onChange(e.target.value)}
                   placeholder="Нууц үг"
                   className={`w-full text-sm mb-1 ${

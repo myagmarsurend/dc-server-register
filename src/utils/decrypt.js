@@ -1,17 +1,12 @@
-import CryptoJS from "crypto-js";
+import { jwtDecode } from "jwt-decode";
 
-export default function decryptWithAES(ciphertext, secretKey) {
+const decodeToken = (token) => {
   try {
-    const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
-
-    if (bytes.sigBytes > 0) {
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-      return decrypted;
-    } else {
-      throw new Error("Decryption failed");
-    }
+    const decoded = jwtDecode(token);
+    return decoded.data;
   } catch (error) {
-    console.error("🚀 ~ decryptWithAES ~ error", error);
-    throw new Error("Invalid decryption key or corrupted ciphertext");
+    console.error("Failed to decode token:", error);
+    return null;
   }
-}
+};
+export default decodeToken;

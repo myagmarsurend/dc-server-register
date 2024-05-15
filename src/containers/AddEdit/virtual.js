@@ -8,12 +8,16 @@ import { CpuUnit, RamUnit, VpcType } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
 import { Password } from "primereact/password";
+import { PASSWORD_SECRET } from "../../context/state";
+import decrypt from "../../utils/decrypt";
 
 const VirtualAddEdit = () => {
+  const userData = JSON.parse(localStorage.getItem("auth"));
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
   const header = data ? "Виртуал засах" : "Шинэ виртуал нэмэх";
   const [hardList, setHardList] = useState([]);
+  const [decryptedPass, setDecryptedPass] = useState();
 
   const serverList = (context?.resserverlist || [])?.map?.((item, index) => {
     return {
@@ -37,7 +41,7 @@ const VirtualAddEdit = () => {
       passwordAgain: data?.passwordAgain || "",
       server: data?.server?._id || serverList[0]?.value,
       dns: data?.dns || "",
-      ipaddress: data?.ipaddress || [{ _id: null }],
+      ipaddress: data?.ipaddress || [{}],
       ram: data?.ram || 0,
       ramunit: data?.ramunit || RamUnit[0]?.value,
       cpu: data?.cpu || 0,
@@ -50,6 +54,14 @@ const VirtualAddEdit = () => {
   });
 
   const password = watch("password");
+
+  useEffect(() => {
+    if (data && password) {
+      let decrypted = decrypt(password, PASSWORD_SECRET);
+      setDecryptedPass(decrypted);
+    }
+  }, [password]);
+
   const serverId = watch("server");
   useEffect(() => {
     const selectedServer = context?.resserverlist?.find(
@@ -103,7 +115,7 @@ const VirtualAddEdit = () => {
   };
 
   const handleAddIp = () => {
-    appendIp({});
+    appendIp();
   };
   const handleRemoveIp = () => {
     removeIp(fieldsIp.length - 1);
@@ -147,31 +159,37 @@ const VirtualAddEdit = () => {
             <small className="p-error">{errors.username.message}</small>
           )}
         </div>
-        <div className="field">
-          <label htmlFor="password" className="block text-sm font-medium mb-2">
-            Нууц үг
-          </label>
-          <Controller
-            name="password"
-            control={control}
-            rules={{ required: "Нууц үгээ оруулна уу." }}
-            render={({ field }) => (
-              <Password
-                id="password"
-                value={field?.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                placeholder="Нууц үг"
-                className={`w-full text-sm mb-1 ${
-                  errors.password ? "p-invalid" : ""
-                }`}
-                toggleMask
-              />
+        {userData?.role === 1 && (
+          <div className="field">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+            >
+              Нууц үг
+            </label>
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: "Нууц үгээ оруулна уу." }}
+              render={({ field }) => (
+                <Password
+                  id="password"
+                  value={decryptedPass || field?.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder="Нууц үг"
+                  className={`w-full text-sm mb-1 ${
+                    errors.password ? "p-invalid" : ""
+                  }`}
+                  disabled={data}
+                  toggleMask
+                />
+              )}
+            />
+            {errors.password && (
+              <small className="p-error">{errors.password.message}</small>
             )}
-          />
-          {errors.password && (
-            <small className="p-error">{errors.password.message}</small>
-          )}
-        </div>
+          </div>
+        )}
         {!data && (
           <div className="field">
             <label

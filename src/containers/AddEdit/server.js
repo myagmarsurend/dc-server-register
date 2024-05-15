@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
@@ -8,11 +8,15 @@ import { CpuUnit, LocationUnit, RamUnit } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
 import { Password } from "primereact/password";
+import decrypt from "../../utils/decrypt";
+import { PASSWORD_SECRET } from "../../context/state";
 
 const ServerAddEdit = () => {
+  const userData = JSON.parse(localStorage.getItem("auth"));
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
   const header = data ? "Сервер засах" : "Шинэ сервер нэмэх";
+  const [decryptedPass, setDecryptedPass] = useState();
 
   const {
     register,
@@ -29,7 +33,7 @@ const ServerAddEdit = () => {
       cpu: data?.cpu || 0,
       cpuunit: data?.cpuunit || CpuUnit[0]?.value,
       hard: data?.hard || [{ hardname: "", hardcap: 0, _id: null }],
-      ipaddress: data?.ipaddress || [{ _id: null }],
+      ipaddress: data?.ipaddress || [{}],
       hostname: data?.hostname || "",
       locationtype: data?.locationtype || LocationUnit[0]?.value,
       description: data?.description || "",
@@ -40,6 +44,13 @@ const ServerAddEdit = () => {
   });
 
   const password = watch("password");
+
+  useEffect(() => {
+    if (data && password) {
+      let decrypted = decrypt(password, PASSWORD_SECRET);
+      setDecryptedPass(decrypted);
+    }
+  }, [password]);
 
   const {
     fields: fieldsHard,
@@ -90,10 +101,10 @@ const ServerAddEdit = () => {
   };
 
   const handleAddIp = () => {
-    appendIp({});
+    appendIp();
   };
   const handleRemoveIp = () => {
-    removeIp(fieldsHard.length - 1);
+    removeIp(fieldsIp.length - 1);
   };
 
   return (
@@ -419,70 +430,71 @@ const ServerAddEdit = () => {
             <small className="p-error">{errors.locationtype.message}</small>
           )}
         </div>
+
+        {userData?.role === 1 && (
+          <div className="field">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+            >
+              Нууц үг
+            </label>
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: "Нууц үгээ оруулна уу." }}
+              render={({ field }) => (
+                <Password
+                  id="password"
+                  value={decryptedPass || field?.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder="Нууц үг"
+                  className={`w-full text-sm mb-1 ${
+                    errors.password ? "p-invalid" : ""
+                  }`}
+                  disabled={data}
+                  toggleMask
+                />
+              )}
+            />
+            {errors.password && (
+              <small className="p-error">{errors.password.message}</small>
+            )}
+          </div>
+        )}
+
         {!data && (
-          <>
-            <div className="field">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг
-              </label>
-              <Controller
-                name="password"
-                control={control}
-                rules={{ required: "Нууц үгээ оруулна уу." }}
-                render={({ field }) => (
-                  <Password
-                    id="password"
-                    value={field?.value}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    placeholder="Нууц үг"
-                    className={`w-full text-sm mb-1 ${
-                      errors.password ? "p-invalid" : ""
-                    }`}
-                    toggleMask
-                  />
-                )}
-              />
-              {errors.password && (
-                <small className="p-error">{errors.password.message}</small>
+          <div className="field">
+            <label
+              htmlFor="passwordAgain"
+              className="block text-sm font-medium mb-2"
+            >
+              Нууц үг давтах
+            </label>
+            <Controller
+              name="passwordAgain"
+              control={control}
+              rules={{
+                validate: (value) =>
+                  value === password || "Нууц үг таарахгүй байна.",
+              }}
+              render={({ field }) => (
+                <Password
+                  id="passwordAgain"
+                  value={field?.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  placeholder="Нууц үг давтах"
+                  className={`w-full text-sm mb-1 ${
+                    errors.passwordAgain ? "p-invalid" : ""
+                  }`}
+                  toggleMask
+                />
               )}
-            </div>
-            <div className="field">
-              <label
-                htmlFor="passwordAgain"
-                className="block text-sm font-medium mb-2"
-              >
-                Нууц үг давтах
-              </label>
-              <Controller
-                name="passwordAgain"
-                control={control}
-                rules={{
-                  validate: (value) =>
-                    value === password || "Нууц үг таарахгүй байна.",
-                }}
-                render={({ field }) => (
-                  <Password
-                    id="passwordAgain"
-                    value={field?.value}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    placeholder="Нууц үг давтах"
-                    className={`w-full text-sm mb-1 ${
-                      errors.passwordAgain ? "p-invalid" : ""
-                    }`}
-                    toggleMask
-                  />
-                )}
-              />
-              {errors.passwordAgain && (
-                <small className="p-error">
-                  {errors.passwordAgain.message}
-                </small>
-              )}
-            </div>
-          </>
+            />
+            {errors.passwordAgain && (
+              <small className="p-error">{errors.passwordAgain.message}</small>
+            )}
+          </div>
         )}
         <Button
           type="submit"

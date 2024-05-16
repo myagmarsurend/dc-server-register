@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
@@ -145,7 +146,7 @@ const UserAddEdit = () => {
           )}
         </div>
 
-        {userData?.role === 1 && (
+        {userData?.role === 1 && data && (
           <div className="field">
             <label
               htmlFor="password"
@@ -153,62 +154,83 @@ const UserAddEdit = () => {
             >
               Нууц үг
             </label>
-            <Controller
-              name="password"
-              control={control}
-              rules={{ required: "Нууц үгээ оруулна уу." }}
-              render={({ field }) => (
-                <Password
-                  id="password"
-                  value={decryptedPass || field?.value}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  placeholder="Нууц үг"
-                  className={`w-full text-sm mb-1 ${
-                    errors.password ? "p-invalid" : ""
-                  }`}
-                  disabled={data}
-                  toggleMask
-                />
-              )}
+            <Password
+              id="password"
+              value={decryptedPass || undefined}
+              placeholder="Нууц үг"
+              className={`w-full text-sm mb-1 }`}
+              disabled
+              toggleMask
             />
-            {errors.password && (
-              <small className="p-error">{errors.password.message}</small>
-            )}
           </div>
         )}
 
         {!data && (
-          <div className="field">
-            <label
-              htmlFor="passwordAgain"
-              className="block text-sm font-medium mb-2"
-            >
-              Нууц үг давтах
-            </label>
-            <Controller
-              name="passwordAgain"
-              control={control}
-              rules={{
-                validate: (value) =>
-                  value === password || "Нууц үг таарахгүй байна.",
-              }}
-              render={({ field }) => (
-                <Password
-                  id="passwordAgain"
-                  value={field?.value}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  placeholder="Нууц үг давтах"
-                  className={`w-full text-sm mb-1 ${
-                    errors.passwordAgain ? "p-invalid" : ""
-                  }`}
-                  toggleMask
-                />
+          <>
+            {" "}
+            <div className="field">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-2"
+              >
+                Нууц үг
+              </label>
+              <Controller
+                name="password"
+                control={control}
+                rules={{ required: "Нууц үгээ оруулна уу." }}
+                render={({ field }) => (
+                  <Password
+                    id="password"
+                    value={field?.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    placeholder="Нууц үг"
+                    className={`w-full text-sm mb-1 ${
+                      errors.password ? "p-invalid" : ""
+                    }`}
+                    disabled={data}
+                    toggleMask
+                  />
+                )}
+              />
+              {errors.password && (
+                <small className="p-error">{errors.password.message}</small>
               )}
-            />
-            {errors.passwordAgain && (
-              <small className="p-error">{errors.passwordAgain.message}</small>
-            )}
-          </div>
+            </div>
+            <div className="field">
+              <label
+                htmlFor="passwordAgain"
+                className="block text-sm font-medium mb-2"
+              >
+                Нууц үг давтах
+              </label>
+              <Controller
+                name="passwordAgain"
+                control={control}
+                rules={{
+                  validate: (value) =>
+                    value === password || "Нууц үг таарахгүй байна.",
+                }}
+                render={({ field }) => (
+                  <Password
+                    id="passwordAgain"
+                    value={field?.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    placeholder="Нууц үг давтах"
+                    className={`w-full text-sm mb-1 ${
+                      errors.passwordAgain ? "p-invalid" : ""
+                    }`}
+                    toggleMask
+                  />
+                )}
+              />
+              {errors.passwordAgain && (
+                <small className="p-error">
+                  {errors.passwordAgain.message}
+                </small>
+              )}
+            </div>
+          </>
         )}
         <div className="field">
           <label htmlFor="isenable" className="block text-sm font-medium mb-2">
@@ -225,7 +247,9 @@ const UserAddEdit = () => {
                 id="isenable"
                 options={IsEnable}
                 placeholder="Төлөв сонгох"
-                className={`w-full text-sm ${errors.role ? "p-invalid" : ""}`}
+                className={`w-full text-sm ${
+                  errors.isenable ? "p-invalid" : ""
+                }`}
               />
             )}
           />

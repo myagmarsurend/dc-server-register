@@ -5,7 +5,7 @@ import { GlobalContext } from "../../context";
 
 const Index = (props) => {
   const context = useContext(GlobalContext);
-  const data = context?.resvpclist || [];
+  const data = context?.resvirtuallist || [];
 
   useEffect(() => {
     document.title = "Виртуал";

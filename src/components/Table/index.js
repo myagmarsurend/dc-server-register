@@ -10,14 +10,18 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { GlobalContext } from "../../context";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Index = ({ columns, data }) => {
   const userData = JSON.parse(localStorage.getItem("auth"));
   const datas = data || [];
   const context = useContext(GlobalContext);
   const dt = useRef(null);
+  const location = useLocation();
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [visibleDelete, setVisibleDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const cols = useMemo(() => {
     return (
@@ -121,7 +125,30 @@ const Index = ({ columns, data }) => {
     context?.setModal({ visible: true, data: e.data });
   };
 
-  const handleDelete = (e) => {};
+  const handleDelete = async (e) => {
+    const res = await context?.request({
+      method: "DELETE",
+      url: `${location.pathname.substring(1)}/delete/${deleteId}`,
+    });
+
+    if (res?.success) {
+      context?.setModal({ visible: false, data: null });
+      setVisibleDelete(false);
+      toast.success(res?.message);
+
+      let path = location.pathname.substring(1);
+      let capitalizedPath = path.charAt(0).toUpperCase() + path.slice(1);
+      console.log("🚀 ~ handleDelete ~ capitalizedPath:", capitalizedPath);
+
+      await context?.request({
+        url: `${location.pathname.substring(1)}/getAll${capitalizedPath}`,
+        model: `${location.pathname.substring(1)}list`,
+        method: "POST",
+      });
+    } else {
+      toast.error(res?.message);
+    }
+  };
 
   return (
     <div className="card w-full">
@@ -168,7 +195,10 @@ const Index = ({ columns, data }) => {
                 <Button
                   className="p-button p-component p-button-icon-only p-button-rounded p-button-warning text-xs"
                   icon="pi pi-trash"
-                  onClick={() => setVisibleDelete(true)}
+                  onClick={() => {
+                    setDeleteId(_._id);
+                    setVisibleDelete(true);
+                  }}
                   tooltip="Устгах"
                   tooltipOptions={{ position: "left", className: "text-xs" }}
                 />

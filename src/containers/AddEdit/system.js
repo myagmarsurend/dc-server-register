@@ -15,7 +15,7 @@ const SystemAddEdit = () => {
   const data = context?.modal?.data;
   const header = data ? "Систем засах" : "Шинэ систем нэмэх";
 
-  const serverList = (context?.resvpclist || [])?.map?.((item, index) => {
+  const serverList = (context?.resvirtuallist || [])?.map?.((item, index) => {
     return {
       value: item?._id,
       label: item?.ipaddress[0] + "-" + item?.name,

@@ -5,7 +5,7 @@ const decodeToken = (token) => {
     const decoded = jwtDecode(token);
     return decoded.data;
   } catch (error) {
-    console.error("Failed to decode token:", error);
+    console.log("Failed to decode token:", error);
     return null;
   }
 };

@@ -145,6 +145,22 @@ const Index = ({ columns, data }) => {
         model: `${location.pathname.substring(1)}list`,
         method: "POST",
       });
+
+      if (path === "virtual" || path === "user") {
+        await context?.request({
+          url: `server/getAllServer`,
+          model: "serverlist",
+          method: "POST",
+        });
+      }
+
+      if (path === "server") {
+        await context?.request({
+          url: `virtual/getAllVirtual`,
+          model: "virtuallist",
+          method: "POST",
+        });
+      }
     } else {
       toast.error(res?.message);
     }

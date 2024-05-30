@@ -241,7 +241,7 @@ const ViewManual = (value) => {
   return (
     <>
       <Button
-        className="text-sm"
+        className="text-sm p-2 text-center"
         onClick={() => {
           setVisible(true);
         }}

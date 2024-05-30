@@ -1,6 +1,6 @@
 import React, { memo, useContext, useMemo, useRef, useState } from "react";
 import * as xlsx from "xlsx";
-import module from "file-saver";
+import { saveAs } from "file-saver";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -50,12 +50,12 @@ const Index = ({ columns, data }) => {
   const exportExcel = async () => {
     try {
       const worksheet = xlsx.utils.json_to_sheet(datas);
+
       const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
       const excelBuffer = xlsx.write(workbook, {
         bookType: "xlsx",
         type: "array",
       });
-
       saveAsExcelFile(excelBuffer, "datas");
     } catch (error) {
       console.error("Failed to export to Excel:", error);
@@ -64,17 +64,14 @@ const Index = ({ columns, data }) => {
 
   const saveAsExcelFile = async (buffer, fileName) => {
     try {
-      if (module.default) {
-        const EXCEL_TYPE =
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-        const EXCEL_EXTENSION = ".xlsx";
-        const data = new Blob([buffer], { type: EXCEL_TYPE });
-
-        module.default.saveAs(
-          data,
-          `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
-        );
-      }
+      const EXCEL_TYPE =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+      const EXCEL_EXTENSION = ".xlsx";
+      const data = new Blob([buffer], { type: EXCEL_TYPE });
+      saveAs(
+        data,
+        `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
+      );
     } catch (error) {
       console.error("Failed to save Excel file:", error);
     }

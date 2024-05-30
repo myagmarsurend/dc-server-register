@@ -260,6 +260,8 @@ const VirtualAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="server"
+                optionValue="value"
+                optionLabel="label"
                 options={serverList}
                 placeholder="Сервер сонгох"
                 className={`w-full text-sm ${errors.server ? "p-invalid" : ""}`}
@@ -328,6 +330,8 @@ const VirtualAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="ramunit"
+                optionValue="value"
+                optionLabel="label"
                 options={RamUnit}
                 placeholder="Рам нэгж сонгох"
                 className={`w-full text-sm ${
@@ -380,6 +384,8 @@ const VirtualAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="cpuunit"
+                optionValue="value"
+                optionLabel="label"
                 options={CpuUnit}
                 placeholder="Рам нэгж сонгох"
                 className={`w-full text-sm ${
@@ -407,6 +413,8 @@ const VirtualAddEdit = () => {
                     {...field}
                     value={field?.value}
                     id={`hard`}
+                optionValue="value"
+                optionLabel="label"
                     options={hardList}
                     placeholder="Hard сонгох"
                     className={`w-full text-sm mb-1 ${
@@ -523,6 +531,8 @@ const VirtualAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="os"
+                optionValue="value"
+                optionLabel="label"
                 options={VpcType}
                 placeholder="OS сонгох"
                 className={`w-full text-sm ${errors.os ? "p-invalid" : ""}`}

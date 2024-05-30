@@ -135,6 +135,8 @@ const UserAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="role"
+                optionValue="value"
+                optionLabel="label"
                 options={UserType}
                 placeholder="Роль сонгох"
                 className={`w-full text-sm ${errors.role ? "p-invalid" : ""}`}
@@ -167,7 +169,6 @@ const UserAddEdit = () => {
 
         {!data && (
           <>
-            {" "}
             <div className="field">
               <label
                 htmlFor="password"
@@ -245,6 +246,8 @@ const UserAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="isenable"
+                optionValue="value"
+                optionLabel="label"
                 options={IsEnable}
                 placeholder="Төлөв сонгох"
                 className={`w-full text-sm ${

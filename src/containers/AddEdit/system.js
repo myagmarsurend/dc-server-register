@@ -108,6 +108,8 @@ const SystemAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="type"
+                optionValue="value"
+                optionLabel="label"
                 options={SystemType}
                 placeholder="Төрөл сонгох"
                 className={`w-full text-sm ${errors.type ? "p-invalid" : ""}`}
@@ -132,6 +134,8 @@ const SystemAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="virtual"
+                optionValue="value"
+                optionLabel="label"
                 options={serverList}
                 placeholder="Сервер сонгох"
                 className={`w-full text-sm ${
@@ -207,6 +211,8 @@ const SystemAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="testvirtual"
+                optionValue="value"
+                optionLabel="label"
                 options={serverList}
                 placeholder="Сервер сонгох"
                 className={`w-full text-sm ${

@@ -33,7 +33,7 @@ const ServerAddEdit = () => {
       cpu: data?.cpu || 0,
       cpuunit: data?.cpuunit || CpuUnit[0]?.value,
       hard: data?.hard || [{ hardname: "", hardcap: 0, _id: null }],
-      ipaddress: data?.ipaddress || [{}],
+      ipaddress: data?.ipaddress || ["10."],
       hostname: data?.hostname || "",
       locationtype: data?.locationtype || LocationUnit[0]?.value,
       description: data?.description || "",
@@ -50,6 +50,7 @@ const ServerAddEdit = () => {
       let decrypted = decrypt(password, PASSWORD_SECRET);
       setDecryptedPass(decrypted);
     }
+    // eslint-disable-next-line
   }, [password]);
 
   const {
@@ -170,6 +171,8 @@ const ServerAddEdit = () => {
                 value={field?.value}
                 id="ramunit"
                 options={RamUnit}
+                optionValue="value"
+                optionLabel="label"
                 placeholder="Рам нэгж сонгох"
                 className={`w-full text-sm ${
                   errors.ramunit ? "p-invalid" : ""
@@ -221,6 +224,8 @@ const ServerAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="cpuunit"
+                optionValue="value"
+                optionLabel="label"
                 options={CpuUnit}
                 placeholder="Рам нэгж сонгох"
                 className={`w-full text-sm ${
@@ -418,6 +423,8 @@ const ServerAddEdit = () => {
                 {...field}
                 value={field?.value}
                 id="locationtype"
+                optionValue="value"
+                optionLabel="label"
                 options={LocationUnit}
                 placeholder="Роль сонгох"
                 className={`w-full text-sm ${

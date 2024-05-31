@@ -16,27 +16,23 @@ const Index = (props) => {
   const context = useContext(GlobalContext);
 
   const fetchData = useCallback(async () => {
-    await context?.request({
-      url: `user/getAllUser`,
-      model: "userlist",
-      method: "POST",
-    });
-    await context?.request({
-      url: `virtual/getAllVirtual`,
-      model: "virtuallist",
-      method: "POST",
-    });
-    await context?.request({
-      url: `server/getAllServer`,
-      model: "serverlist",
-      method: "POST",
-    });
-    await context?.request({
-      url: `system/getAllSystem`,
-      model: "systemlist",
-      method: "POST",
-    });
+    const requests = [
+      { url: 'user/getAllUser', model: 'userlist' },
+      { url: 'virtual/getAllVirtual', model: 'virtuallist' },
+      { url: 'server/getAllServer', model: 'serverlist' },
+      { url: 'system/getAllSystem', model: 'systemlist' },
+    ];
+
+    const requestPromises = requests.map(request =>
+      context?.request({
+        ...request,
+        method: 'POST',
+      })
+    );
+
+    await Promise.all(requestPromises);
   }, [context]);
+
   useEffect(() => {
     if (context?._auth) {
       fetchData();

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
@@ -32,7 +32,7 @@ const ServerAddEdit = () => {
       ramunit: data?.ramunit || RamUnit[0]?.value,
       cpu: data?.cpu || 0,
       cpuunit: data?.cpuunit || CpuUnit[0]?.value,
-      hard: data?.hard || [{ hardname: "", hardcap: 0, _id: null }],
+      hard: data?.hard || [{ hardname: "", hardcap: 0, type: null, _id: null }],
       ipaddress: data?.ipaddress || ["10."],
       hostname: data?.hostname || "",
       locationtype: data?.locationtype || LocationUnit[0]?.value,
@@ -40,8 +40,29 @@ const ServerAddEdit = () => {
       password: data?.password || "",
       passwordAgain: data?.passwordAgain || "",
       _id: data?._id || null,
+      newtype: "",
     },
   });
+
+  const newtype = watch("newtype");
+
+  const hardList = [
+    ...context?.resoptionhard,
+    {
+      value: newtype,
+      label: (
+        <Fragment>
+          <InputText
+            {...register("newtype")}
+            id="newtype"
+            type="text"
+            placeholder="Hard төрөл нэмэх"
+            className={`w-full text-sm mb-1`}
+          />
+        </Fragment>
+      ),
+    },
+  ];
 
   const password = watch("password");
 
@@ -73,6 +94,14 @@ const ServerAddEdit = () => {
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
+
+    data?.hard?.map((h) => {
+      if (h?.type === "newtype" && data?.newtype === "") {
+        toast.error("Hard төрөл оруулна уу");
+        return;
+      }
+    });
+
     const res = await context?.request({
       method: "POST",
       url: "server/addServer",
@@ -95,7 +124,7 @@ const ServerAddEdit = () => {
   };
 
   const handleAddHard = () => {
-    appendHard({ hardname: "", hardcap: 0 });
+    appendHard({ hardname: "", hardcap: 0, type: null });
   };
   const handleRemoveHard = () => {
     removeHard(fieldsHard.length - 1);
@@ -292,6 +321,40 @@ const ServerAddEdit = () => {
               {errors.hard?.[index]?.hardcap && (
                 <small className="p-error">
                   {errors.hard[index].hardcap.message}
+                </small>
+              )}
+            </div>
+            <div className="field">
+              <label
+                htmlFor={`type-${index}`}
+                className="block text-sm font-medium mb-1"
+              >
+                Hard төрөл
+              </label>
+              <Controller
+                name={`hard.${index}.type`}
+                control={control}
+                rules={{ required: "Hard төрөл оруулна уу." }}
+                render={({ field, fieldState }) => {
+                  return (
+                    <Dropdown
+                      {...field}
+                      value={field?.value}
+                      id={`type-${index}`}
+                      optionValue="value"
+                      optionLabel="label"
+                      options={hardList}
+                      placeholder="Hard төрөл"
+                      className={`w-full text-sm mb-1 ${
+                        fieldState.error ? "p-invalid" : ""
+                      }`}
+                    />
+                  );
+                }}
+              />
+              {errors.hard?.[index]?.type && (
+                <small className="p-error">
+                  {errors.hard[index].type.message}
                 </small>
               )}
             </div>

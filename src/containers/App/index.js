@@ -17,16 +17,18 @@ const Index = (props) => {
 
   const fetchData = useCallback(async () => {
     const requests = [
-      { url: 'user/getAllUser', model: 'userlist' },
-      { url: 'virtual/getAllVirtual', model: 'virtuallist' },
-      { url: 'server/getAllServer', model: 'serverlist' },
-      { url: 'system/getAllSystem', model: 'systemlist' },
+      { url: "user/getAllUser", model: "userlist" },
+      { url: "virtual/getAllVirtual", model: "virtuallist" },
+      { url: "server/getAllServer", model: "serverlist" },
+      { url: "system/getAllSystem", model: "systemlist" },
+      { url: "option/getOption/os", model: "optionos" },
+      { url: "option/getOption/hard", model: "optionhard" },
     ];
 
-    const requestPromises = requests.map(request =>
+    const requestPromises = requests.map((request) =>
       context?.request({
         ...request,
-        method: 'POST',
+        method: "POST",
       })
     );
 

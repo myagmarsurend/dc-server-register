@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
-import { CpuUnit, RamUnit, VpcType } from "../../enums/enum";
+import { CpuUnit, RamUnit } from "../../enums/enum";
 import { GlobalContext } from "../../context";
 import toast from "react-hot-toast";
 import { Password } from "primereact/password";
@@ -42,7 +42,7 @@ const VirtualAddEdit = () => {
       passwordAgain: data?.passwordAgain || "",
       server: data?.server?._id || serverList[0]?.value,
       dns: data?.dns || "",
-      ipaddress: data?.ipaddress || [{}],
+      ipaddress: data?.ipaddress || ["10."],
       ram: data?.ram || 0,
       ramunit: data?.ramunit || RamUnit[0]?.value,
       cpu: data?.cpu || 0,
@@ -50,9 +50,28 @@ const VirtualAddEdit = () => {
       hard: data?.hard?._id || { hardname: "", hardcap: 0, _id: null },
       usedhard: data?.usedhard || 0,
       _id: data?._id || null,
-      os: data?.os || VpcType[0]?.value,
+      os: data?.os || optionOs[0]?.value,
+      newos: "",
     },
   });
+
+  const optionOs = [
+    ...context?.resoptionos,
+    {
+      value: "newos",
+      label: (
+        <Fragment>
+          <InputText
+            {...register("newos")}
+            id="newos"
+            type="text"
+            placeholder="OS нэмэх"
+            className={`w-full text-sm mb-1`}
+          />
+        </Fragment>
+      ),
+    },
+  ];
 
   const password = watch("password");
 
@@ -89,10 +108,15 @@ const VirtualAddEdit = () => {
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
+
+    if (data?.os === "newos" && data?.newos === "") {
+      toast.error("Үйлдлийн систем оруулна уу");
+      return;
+    }
     const res = await context?.request({
       method: "POST",
       url: "virtual/addVirtual",
-      body: data,
+      body: data?.os !== "newos" ? data : { ...data, os: data?.newos },
     });
 
     if (res?.success) {
@@ -110,6 +134,26 @@ const VirtualAddEdit = () => {
         model: "serverlist",
         method: "POST",
       });
+
+      if (data?.os === "newos") {
+        if (data?.newos === "") {
+          toast.error("Үйлдлийн систем оруулна уу");
+          return;
+        }
+        const res = await context?.request({
+          url: "option/addOption/os",
+          model: "addoptionos",
+          method: "POST",
+          body: { name: data?.newos },
+        });
+        if (res?.success) {
+          await context?.request({
+            url: "option/getOption/os",
+            model: "optionos",
+            method: "POST",
+          });
+        }
+      }
     } else {
       toast.error(res?.message);
     }
@@ -413,8 +457,8 @@ const VirtualAddEdit = () => {
                     {...field}
                     value={field?.value}
                     id={`hard`}
-                optionValue="value"
-                optionLabel="label"
+                    optionValue="value"
+                    optionLabel="label"
                     options={hardList}
                     placeholder="Hard сонгох"
                     className={`w-full text-sm mb-1 ${
@@ -533,7 +577,7 @@ const VirtualAddEdit = () => {
                 id="os"
                 optionValue="value"
                 optionLabel="label"
-                options={VpcType}
+                options={optionOs}
                 placeholder="OS сонгох"
                 className={`w-full text-sm ${errors.os ? "p-invalid" : ""}`}
               />

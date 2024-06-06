@@ -151,7 +151,7 @@ const getCpuUnit = (value) => {
 
 const getOsUnit = (value) => {
   switch (value) {
-    case 1:
+    case "Windows":
       return (
         <Tag
           value="Windows"
@@ -159,7 +159,7 @@ const getOsUnit = (value) => {
           style={{ backgroundColor: "GrayText" }}
         />
       );
-    case 2:
+    case "Ubuntu 20.04":
       return (
         <Tag
           value="Ubuntu 20.04"
@@ -167,7 +167,7 @@ const getOsUnit = (value) => {
           style={{ backgroundColor: "ActiveBorder" }}
         />
       );
-    case 3:
+    case "Ubuntu 22.04":
       return (
         <Tag
           value="Ubuntu 22.04"
@@ -175,7 +175,7 @@ const getOsUnit = (value) => {
           style={{ backgroundColor: "ButtonFace" }}
         />
       );
-    case 4:
+    case "Ubuntu 18.04":
       return (
         <Tag
           value="Ubuntu 18.04"
@@ -183,7 +183,7 @@ const getOsUnit = (value) => {
           style={{ backgroundColor: "burlywood" }}
         />
       );
-    case 5:
+    case "CentOs":
       return (
         <Tag
           value="CentOs"
@@ -192,7 +192,13 @@ const getOsUnit = (value) => {
         />
       );
     default:
-      return null;
+      return (
+        <Tag
+          value={value}
+          className="w-full"
+          style={{ backgroundColor: "InfoText" }}
+        />
+      );
   }
 };
 

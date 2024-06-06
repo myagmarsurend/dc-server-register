@@ -50,28 +50,11 @@ const VirtualAddEdit = () => {
       hard: data?.hard?._id || { hardname: "", hardcap: 0, _id: null },
       usedhard: data?.usedhard || 0,
       _id: data?._id || null,
-      os: data?.os || optionOs[0]?.value,
-      newos: "",
+      os: data?.os || context?.ressettings2list[0]?.value || null,
     },
   });
 
-  const optionOs = [
-    ...context?.resoptionos,
-    {
-      value: "newos",
-      label: (
-        <Fragment>
-          <InputText
-            {...register("newos")}
-            id="newos"
-            type="text"
-            placeholder="OS нэмэх"
-            className={`w-full text-sm mb-1`}
-          />
-        </Fragment>
-      ),
-    },
-  ];
+  const optionOs = [...context?.ressettings2list];
 
   const password = watch("password");
 
@@ -108,15 +91,10 @@ const VirtualAddEdit = () => {
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
-
-    if (data?.os === "newos" && data?.newos === "") {
-      toast.error("Үйлдлийн систем оруулна уу");
-      return;
-    }
     const res = await context?.request({
       method: "POST",
       url: "virtual/addVirtual",
-      body: data?.os !== "newos" ? data : { ...data, os: data?.newos },
+      body: data,
     });
 
     if (res?.success) {
@@ -134,26 +112,6 @@ const VirtualAddEdit = () => {
         model: "serverlist",
         method: "POST",
       });
-
-      if (data?.os === "newos") {
-        if (data?.newos === "") {
-          toast.error("Үйлдлийн систем оруулна уу");
-          return;
-        }
-        const res = await context?.request({
-          url: "option/addOption/os",
-          model: "addoptionos",
-          method: "POST",
-          body: { name: data?.newos },
-        });
-        if (res?.success) {
-          await context?.request({
-            url: "option/getOption/os",
-            model: "optionos",
-            method: "POST",
-          });
-        }
-      }
     } else {
       toast.error(res?.message);
     }

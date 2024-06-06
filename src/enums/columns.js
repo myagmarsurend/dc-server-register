@@ -55,7 +55,8 @@ export const ServerListColumns = [
     key: "ipaddress",
     align: "center",
     body: (value) => {
-      if (value?.length === 1) return <span>{value[0]}</span>;
+      if (value?.length === 1)
+        return <span className="white-space-nowrap">{value[0]}</span>;
       else return <span>{value?.map((i) => i + ", ")}</span>;
     },
   },
@@ -80,17 +81,17 @@ export const ServerListColumns = [
     body: (value) => {
       if (value?.length === 1)
         return (
-          <span>
-            {value[0]?.hardname}-{value[0]?.hardcap}
+          <span className="white-space-nowrap">
+            {value[0]?.hardname}-{value[0]?.hardcap}GB
           </span>
         );
       else
         return (
-          <span>
+          <span className="white-space-nowrap">
             {value?.map((i, j) => {
               return (
                 <span key={j}>
-                  {i?.hardname}-{i?.hardcap} <br />
+                  {i?.hardname}-{i?.hardcap}GB <br />
                 </span>
               );
             })}
@@ -105,11 +106,11 @@ export const ServerListColumns = [
     align: "right",
     body: (rowData) => {
       return (
-        <span>
+        <span className="white-space-nowrap">
           {rowData?.map((i, j) => {
             return (
               <span key={j}>
-                {i?.hardname}-{i?.hardusedcap} <br />
+                {i?.hardname}-{i?.hardusedcap}GB <br />
               </span>
             );
           })}
@@ -127,8 +128,8 @@ export const ServerListColumns = [
         <span>
           {rowData?.map((i, j) => {
             return (
-              <span key={j}>
-                {i?.hardname}-{i?.hardcap - i?.hardusedcap} <br />
+              <span key={j} className="white-space-nowrap">
+                {i?.hardname}-{i?.hardcap - i?.hardusedcap}GB <br />
               </span>
             );
           })}
@@ -209,7 +210,8 @@ export const VpcColumns = [
     key: "ipaddress",
     align: "center",
     body: (value) => {
-      if (value?.length === 1) return <span>{value[0]}</span>;
+      if (value?.length === 1)
+        return <span className="white-space-nowrap">{value[0]}</span>;
       else return <span>{value?.map((i) => i + ", ")}</span>;
     },
   },
@@ -217,6 +219,16 @@ export const VpcColumns = [
     title: "Домайн нэр",
     dataIndex: "dns",
     key: "dns",
+  },
+  {
+    title: "Host name",
+    dataIndex: "servername",
+    key: "server",
+    width: 150,
+    align: "center",
+    body: (value) => {
+      return <span className="white-space-nowrap">{value?.name}</span>;
+    },
   },
   {
     title: "Нэвтрэх нэр",
@@ -258,14 +270,16 @@ export const VpcColumns = [
     body: (value) => <Formatter value={value} format="cpuunit" />,
   },
   {
-    title: "Server address",
+    title: "Host address",
     dataIndex: "server",
     key: "server",
     width: 150,
     align: "center",
     body: (value) => {
       if (value?.ipaddress?.length === 1)
-        return <span>{value?.ipaddress[0]}</span>;
+        return (
+          <span className="white-space-nowrap">{value?.ipaddress[0]}</span>
+        );
       else return <span>{value?.ipaddress?.map((i) => i + ", ")}</span>;
     },
   },
@@ -293,7 +307,7 @@ export const SystemListColumns = [
     key: "virtual",
     align: "center",
     body: (value, row) => {
-      return <span>{value?.ipaddress[0]}</span>;
+      return <span className="white-space-nowrap">{value?.ipaddress[0]}</span>;
     },
   },
   {
@@ -308,7 +322,7 @@ export const SystemListColumns = [
     key: "virtual",
     align: "center",
     body: (value, row) => {
-      return <span>{value?.ipaddress[0]}</span>;
+      return <span className="white-space-nowrap">{value?.ipaddress[0]}</span>;
     },
   },
   {
@@ -329,4 +343,36 @@ export const SystemListColumns = [
     },
   },
   InsYmdColumn,
+];
+
+export const SettingsColumns = [
+  {
+    title: "Төрөл",
+    dataIndex: "type",
+    key: "type",
+    body: (value) => <Formatter value={value} format="settingstype" />,
+  },
+  {
+    title: "Зориулалт",
+    dataIndex: "purpose",
+    key: "purpose",
+    body: (value) => <Formatter value={value} format="settingspurposetype" />,
+  },
+  {
+    title: "Нэр",
+    dataIndex: "label",
+    key: "label",
+  },
+  // {
+  //   title: "Утга",
+  //   dataIndex: "value",
+  //   key: "value",
+  // },
+  // {
+  //   title: "Төлөв",
+  //   dataIndex: "isenable",
+  //   key: "isenable",
+  //   width: 100,
+  //   body: (value) => <Formatter value={value} format="isenable" />,
+  // },
 ];

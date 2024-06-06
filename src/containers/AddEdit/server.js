@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
@@ -6,7 +6,6 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { CpuUnit, LocationUnit, RamUnit } from "../../enums/enum";
 import { GlobalContext } from "../../context";
-import toast from "react-hot-toast";
 import { Password } from "primereact/password";
 import decrypt from "../../utils/decrypt";
 import { PASSWORD_SECRET } from "../../context/state";
@@ -22,7 +21,6 @@ const ServerAddEdit = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     control,
     watch,
   } = useForm({
@@ -40,29 +38,10 @@ const ServerAddEdit = () => {
       password: data?.password || "",
       passwordAgain: data?.passwordAgain || "",
       _id: data?._id || null,
-      newtype: "",
     },
   });
 
-  const newtype = watch("newtype");
-
-  const hardList = [
-    ...context?.resoptionhard,
-    {
-      value: newtype,
-      label: (
-        <Fragment>
-          <InputText
-            {...register("newtype")}
-            id="newtype"
-            type="text"
-            placeholder="Hard төрөл нэмэх"
-            className={`w-full text-sm mb-1`}
-          />
-        </Fragment>
-      ),
-    },
-  ];
+  const hardList = [...context?.ressettings1list];
 
   const password = watch("password");
 
@@ -94,33 +73,25 @@ const ServerAddEdit = () => {
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
+    // const res = await context?.request({
+    //   method: "POST",
+    //   url: "server/addServer",
+    //   body: data,
+    // });
 
-    data?.hard?.map((h) => {
-      if (h?.type === "newtype" && data?.newtype === "") {
-        toast.error("Hard төрөл оруулна уу");
-        return;
-      }
-    });
+    // if (res?.success) {
+    //   toast.success(res?.message);
+    //   reset();
+    //   context?.setModal({ visible: false, data: null });
 
-    const res = await context?.request({
-      method: "POST",
-      url: "server/addServer",
-      body: data,
-    });
-
-    if (res?.success) {
-      toast.success(res?.message);
-      reset();
-      context?.setModal({ visible: false, data: null });
-
-      await context?.request({
-        url: `server/getAllServer`,
-        model: "serverlist",
-        method: "POST",
-      });
-    } else {
-      toast.error(res?.message);
-    }
+    //   await context?.request({
+    //     url: `server/getAllServer`,
+    //     model: "serverlist",
+    //     method: "POST",
+    //   });
+    // } else {
+    //   toast.error(res?.message);
+    // }
   };
 
   const handleAddHard = () => {

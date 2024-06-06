@@ -7,6 +7,7 @@ import System from "./System";
 import Monitoring from "./Monitoring";
 import User from "./User";
 import AddEdit from "./AddEdit";
+import Settings from "./Settings";
 
 export {
   App,
@@ -18,4 +19,5 @@ export {
   AddEdit,
   Monitoring,
   System,
+  Settings,
 };

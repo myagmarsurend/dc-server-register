@@ -54,3 +54,10 @@ export const IsEnable = [
     label: "Идэвхгүй",
   },
 ];
+
+export const SettingsType = [{ value: 1, label: "Select" }];
+
+export const SettingsPurposeType = [
+  { value: 1, label: "Hard" },
+  { value: 2, label: "OS" },
+];

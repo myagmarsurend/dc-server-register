@@ -21,8 +21,9 @@ const Index = (props) => {
       { url: "virtual/getAllVirtual", model: "virtuallist" },
       { url: "server/getAllServer", model: "serverlist" },
       { url: "system/getAllSystem", model: "systemlist" },
-      { url: "option/getOption/os", model: "optionos" },
-      { url: "option/getOption/hard", model: "optionhard" },
+      { url: "settings/getAllSettings", model: "settingslist" },
+      { url: "settings/getSettings/1", model: "settings1list" },
+      { url: "settings/getSettings/2", model: "settings2list" },
     ];
 
     const requestPromises = requests.map((request) =>

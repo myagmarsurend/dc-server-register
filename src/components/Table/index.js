@@ -174,6 +174,8 @@ const Index = ({ columns, data }) => {
         rowsPerPageOptions={[5, 10, 25, 50]}
         globalFilter={globalFilterValue}
         selectionMode="single"
+        scrollable
+        scrollHeight="80vh"  // Adjust height as needed
         tableStyle={{ minWidth: "50rem" }}
         paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         currentPageReportTemplate="{first} to {last} of {totalRecords}"

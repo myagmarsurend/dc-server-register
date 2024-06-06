@@ -119,12 +119,12 @@ const Index = () => {
       href: "/user",
     },
     {
-      label: "Сервер",
+      label: "Хост",
       template: itemRenderer,
       href: "/server",
     },
     {
-      label: "Виртуал",
+      label: "Сервер",
       template: itemRenderer,
       href: "/virtual",
     },
@@ -133,11 +133,11 @@ const Index = () => {
       template: itemRenderer,
       href: "/system",
     },
-    // {
-    //   label: "Мониторинг",
-    //   template: itemRenderer,
-    //   href: "/monitoring",
-    // },
+    {
+      label: "Тохиргоо",
+      template: itemRenderer,
+      href: "/settings",
+    },
   ];
 
   let userItems = [
@@ -147,7 +147,7 @@ const Index = () => {
       href: "/system",
     },
     {
-      label: "Виртуал",
+      label: "Сервер",
       template: itemRenderer,
       href: "/virtual",
     },

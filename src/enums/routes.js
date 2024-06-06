@@ -56,8 +56,8 @@ export const ROUTES = [
     // ],
   },
   {
-    path: "/monitoring",
-    comp: "Monitoring",
+    path: "/settings",
+    comp: "Settings",
     // subroutes: [
     //   {
     //     path: "/monitoring/add",

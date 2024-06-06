@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 import moment from "moment";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { SettingsPurposeType, SettingsType } from "../enums/enum";
 
 const Formatter = ({ format, value, type, bg }) => {
   switch (format) {
@@ -43,6 +44,10 @@ const Formatter = ({ format, value, type, bg }) => {
       return getSystemType(value);
     case "seemanual":
       return ViewManual(value);
+    case "settingstype":
+      return getSettingsType(value);
+    case "settingspurposetype":
+      return getSettingsPurposeType(value);
     default:
       return <Tag value={value} severity={type} />;
   }
@@ -71,7 +76,7 @@ const getLocationTypeTag = (value) => {
         <Tag
           value="Салбар-3"
           className="w-full"
-          style={{ backgroundColor: "ButtonFace" }}
+          style={{ backgroundColor: "rebeccapurple" }}
         />
       );
     case 4:
@@ -265,6 +270,26 @@ const ViewManual = (value) => {
         <div dangerouslySetInnerHTML={{ __html: value }} />
       </Dialog>
     </>
+  );
+};
+
+const getSettingsType = (value) => {
+  return (
+    <Tag
+      value={SettingsType[value - 1].label}
+      className="w-6"
+      style={{ backgroundColor: "green" }}
+    />
+  );
+};
+
+const getSettingsPurposeType = (value) => {
+  return (
+    <Tag
+      value={SettingsPurposeType[value - 1].label}
+      className="w-6"
+      style={{ backgroundColor: "purple" }}
+    />
   );
 };
 

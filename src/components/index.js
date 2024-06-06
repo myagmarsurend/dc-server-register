@@ -1,2 +1,5 @@
 import Table from "./Table";
-export { Table };
+import Card from "./Card";
+import TreeTable from "./TreeTable";
+
+export { Table, Card, TreeTable };

@@ -6,6 +6,7 @@ import { GlobalContext } from "../../context";
 import ServerAddEdit from "./server";
 import VirtualAddEdit from "./virtual";
 import SystemAddEdit from "./system";
+import SettingsAddEdit from "./settings";
 
 const Index = (props) => {
   const context = useContext(GlobalContext);
@@ -21,6 +22,8 @@ const Index = (props) => {
         return <VirtualAddEdit data={location?.state?.data} />;
       case "/system":
         return <SystemAddEdit data={location?.state?.data} />;
+      case "/settings":
+        return <SettingsAddEdit data={location?.state?.data} />;
       default:
         return null;
     }

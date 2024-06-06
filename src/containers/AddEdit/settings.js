@@ -48,7 +48,7 @@ const UserAddEdit = () => {
       });
 
       await context?.request({
-        url: `settings/getAllSettings/${data?.purpose}`,
+        url: `settings/getSettings/${data?.purpose}`,
         model: `settings${data?.purpose}list`,
         method: "POST",
       });

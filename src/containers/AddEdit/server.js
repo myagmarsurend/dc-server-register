@@ -9,6 +9,7 @@ import { GlobalContext } from "../../context";
 import { Password } from "primereact/password";
 import decrypt from "../../utils/decrypt";
 import { PASSWORD_SECRET } from "../../context/state";
+import toast from "react-hot-toast";
 
 const ServerAddEdit = () => {
   const userData = JSON.parse(localStorage.getItem("auth"));
@@ -22,6 +23,7 @@ const ServerAddEdit = () => {
     handleSubmit,
     formState: { errors },
     control,
+    reset,
     watch,
   } = useForm({
     defaultValues: {
@@ -73,25 +75,25 @@ const ServerAddEdit = () => {
 
   const handleSave = async (data) => {
     console.log("handleSave ~ data:", data);
-    // const res = await context?.request({
-    //   method: "POST",
-    //   url: "server/addServer",
-    //   body: data,
-    // });
+    const res = await context?.request({
+      method: "POST",
+      url: "server/addServer",
+      body: data,
+    });
 
-    // if (res?.success) {
-    //   toast.success(res?.message);
-    //   reset();
-    //   context?.setModal({ visible: false, data: null });
+    if (res?.success) {
+      toast.success(res?.message);
+      reset();
+      context?.setModal({ visible: false, data: null });
 
-    //   await context?.request({
-    //     url: `server/getAllServer`,
-    //     model: "serverlist",
-    //     method: "POST",
-    //   });
-    // } else {
-    //   toast.error(res?.message);
-    // }
+      await context?.request({
+        url: `server/getAllServer`,
+        model: "serverlist",
+        method: "POST",
+      });
+    } else {
+      toast.error(res?.message);
+    }
   };
 
   const handleAddHard = () => {

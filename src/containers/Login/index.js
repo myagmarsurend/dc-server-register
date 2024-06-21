@@ -7,6 +7,8 @@ import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
+import { Image } from "primereact/image";
+import Logo from "../../assets/logo.png";
 
 const Index = () => {
   const context = useContext(GlobalContext);
@@ -61,9 +63,13 @@ const Index = () => {
 
   return (
     <div className="surface-card p-4 shadow-2 border-round w-full h-fit lg:w-2 ">
+      <div className="card flex justify-content-center">
+        <Image src={Logo} alt="Image" width="140" />
+      </div>
       <div className="text-center mb-5 text-900 text-xl font-medium mb-3">
         DC Сервер бүртгэл
       </div>
+
       <form onSubmit={handleSubmit(handleLogin)} className="p-fluid">
         <div className="field">
           <label htmlFor="code" className="block text-900 font-medium mb-2">

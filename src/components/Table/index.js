@@ -70,7 +70,7 @@ const Index = ({ columns, data }) => {
       const data = new Blob([buffer], { type: EXCEL_TYPE });
       saveAs(
         data,
-        `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
+        `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`,
       );
     } catch (error) {
       console.error("Failed to save Excel file:", error);
@@ -175,7 +175,8 @@ const Index = ({ columns, data }) => {
         globalFilter={globalFilterValue}
         selectionMode="single"
         scrollable
-        scrollHeight="80vh"  // Adjust height as needed
+        showGridlines
+        scrollHeight="80vh" // Adjust height as needed
         tableStyle={{ minWidth: "50rem" }}
         paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         currentPageReportTemplate="{first} to {last} of {totalRecords}"
@@ -244,5 +245,5 @@ const Index = ({ columns, data }) => {
 
 export default memo(
   Index,
-  (prev, next) => prev.data === next.data && prev.columns === next.columns
+  (prev, next) => prev.data === next.data && prev.columns === next.columns,
 );

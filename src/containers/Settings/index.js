@@ -8,7 +8,7 @@ const Index = (props) => {
   const data = context?.ressettingslist || [];
 
   useEffect(() => {
-    document.title = "Хэрэглэгч";
+    document.title = "Тохиргоо";
   }, []);
 
   return (

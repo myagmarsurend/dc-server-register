@@ -15,7 +15,7 @@ const ServerAddEdit = () => {
   const userData = JSON.parse(localStorage.getItem("auth"));
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
-  const header = data ? "Сервер засах" : "Шинэ сервер нэмэх";
+  const header = data ? "Хост засах" : "Шинэ хост нэмэх";
   const [decryptedPass, setDecryptedPass] = useState();
 
   const {

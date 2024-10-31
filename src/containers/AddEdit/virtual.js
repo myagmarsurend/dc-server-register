@@ -16,7 +16,7 @@ const VirtualAddEdit = () => {
   const userData = JSON.parse(localStorage.getItem("auth"));
   const context = useContext(GlobalContext);
   const data = context?.modal?.data;
-  const header = data ? "Виртуал засах" : "Шинэ виртуал нэмэх";
+  const header = data ? "Сервер засах" : "Шинэ сервер нэмэх";
   const [hardList, setHardList] = useState([]);
   const [decryptedPass, setDecryptedPass] = useState();
 
@@ -68,7 +68,7 @@ const VirtualAddEdit = () => {
   const serverId = watch("server");
   useEffect(() => {
     const selectedServer = context?.resserverlist?.find(
-      (item) => item._id === serverId
+      (item) => item._id === serverId,
     );
     const mappedHardList =
       selectedServer?.hard?.map((hardItem) => ({

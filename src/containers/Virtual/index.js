@@ -8,7 +8,7 @@ const Index = (props) => {
   const data = context?.resvirtuallist || [];
 
   useEffect(() => {
-    document.title = "Виртуал";
+    document.title = "Сервер";
   }, []);
 
   return (

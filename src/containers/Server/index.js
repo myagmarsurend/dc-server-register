@@ -7,9 +7,8 @@ const Index = (props) => {
   const context = useContext(GlobalContext);
   const data = context?.resserverlist || [];
 
-
   useEffect(() => {
-    document.title = "Сервер";
+    document.title = "Хост";
   }, []);
 
   return (

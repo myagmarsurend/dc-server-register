@@ -4,7 +4,7 @@ import * as Context from "../";
 import { fetchRequest } from "../fetch";
 
 export const API_URL = "http://10.0.0.36:3000/";
-// const API_URL = "http://10.150.10.73:3002/";
+// const API_URL = "http://10.150.10.17:3002/";
 // const API_URL = "http://localhost:3002/";
 
 const initialState = {
